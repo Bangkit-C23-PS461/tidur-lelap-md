@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Tidur Lelap</string>
+    <string name="signup">Sign Up</string>
+    <string name="login">Sign In</string>
+    <string name="logout">Logout</string>
+    <string name="greeting">Good Evening, %1$s</string>
+    <string name="greeting_night">Good Night, %1$s</string>
+    <string name="email">name@gmail.com</string>
+    <string name="setting">Setting</string>
+    <string name="language">Language</string>
+    <string name="alarm">Alarm</string>
+    <string name="tracking_before">Track your sleep</string>
+</resources>
