@@ -14,7 +14,7 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="35dp"
         android:fontFamily="@font/roboto_medium"
-        android:text="Hi, John Doe"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="28sp"
         app:layout_constraintStart_toStartOf="parent"
