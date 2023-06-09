@@ -11,4 +11,16 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
+    <fragment
+        android:id="@+id/navigation_sleeptrack"
+        android:name="com.capstone.tidurlelap.ui.sleeptrack.SleepTrackFragment"
+        android:label="@string/title_sleeptrack"
+        tools:layout="@layout/fragment_sleep_track" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.capstone.tidurlelap.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
+
 </navigation>

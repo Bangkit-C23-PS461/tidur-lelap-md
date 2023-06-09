@@ -10,4 +10,7 @@
     <string name="language">Language</string>
     <string name="alarm">Alarm</string>
     <string name="tracking_before">Track your sleep</string>
+    <string name="title_home">Home</string>
+    <string name="title_sleeptrack">Sleep Track</string>
+    <string name="title_profile">Profile</string>
 </resources>
