@@ -33,11 +33,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         android:scrollbars="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_row_button"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <ImageButton
@@ -47,7 +49,7 @@
         android:src="@drawable/calendar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.884"
-        app:layout_constraintStart_toEndOf="@+id/recyclerView"
+        app:layout_constraintStart_toEndOf="@+id/rvDate"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <ImageView
@@ -57,7 +59,7 @@
         android:src="@drawable/column_data"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/rvDate" />
 
     <ImageView
         android:layout_width="wrap_content"
