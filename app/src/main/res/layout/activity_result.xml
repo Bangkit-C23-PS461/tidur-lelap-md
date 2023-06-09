@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/cormorant_medium"
-        android:text="Sleep Quality"
+        android:text="@string/sleep_quality"
         android:layout_marginTop="55dp"
         android:textColor="@color/black"
         android:textSize="28sp"
@@ -27,7 +27,7 @@
         android:fontFamily="@font/cormorant_medium"
         android:layout_marginTop="20dp"
         android:textColor="@color/black"
-        android:text="XX"
+        android:text="@string/sleep_quality_number"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
         android:layout_marginTop="15dp"
-        android:text="You spent more than x hours asleep"
+        android:text="@string/time_spent"
         android:textColor="@color/black"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,11 +47,24 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_score" />
 
     <ImageView
+        android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/sleep_time"
         tools:layout_editor_absoluteX="36dp"
         tools:layout_editor_absoluteY="236dp" />
+
+    <TextView
+        android:id="@+id/sleephours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_medium"
+        android:textSize="25sp"
+        android:text="@string/sleep_hours"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+        app:layout_constraintEnd_toEndOf="@+id/imageView6"
+        app:layout_constraintStart_toStartOf="@+id/imageView6"
+        app:layout_constraintTop_toTopOf="@+id/imageView6" />
 
     <ImageView
         android:id="@+id/imageView5"
@@ -60,6 +73,18 @@
         android:src="@drawable/sleep_noise"
         tools:layout_editor_absoluteX="131dp"
         tools:layout_editor_absoluteY="393dp" />
+
+    <TextView
+        android:id="@+id/sleepnoise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_medium"
+        android:textSize="25sp"
+        android:text="@string/sleep_noise_db"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView5"
+        app:layout_constraintEnd_toEndOf="@+id/imageView5"
+        app:layout_constraintStart_toStartOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="@+id/imageView5" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -81,7 +106,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
         android:layout_marginTop="20dp"
-        android:text="@string/lorem_ipsum"
+        android:text="@string/personal_insight"
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="12sp"
@@ -95,7 +120,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_medium"
         android:layout_marginTop="20dp"
-        android:text="Tap to back home"
+        android:text="@string/back_to_home"
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
