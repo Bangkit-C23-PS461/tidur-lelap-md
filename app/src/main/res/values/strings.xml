@@ -13,4 +13,19 @@
     <string name="title_home">Home</string>
     <string name="title_sleeptrack">Sleep Track</string>
     <string name="title_profile">Profile</string>
+    <string name="no_account">Haven\'t an account yet?</string>
+    <string name="create_now">Create Now</string>
+    <string name="greeting_home">Hi, %1$s</string>
+    <string name="have_a_nice_day">Have a nice day!</string>
+    <string name="sleep_score_number">%1$d</string>
+    <string name="sleep_score">Sleep Score</string>
+    <string name="sleep_hours">%1$d</string>
+    <string name="sleep_quality">Sleep Quality</string>
+    <string name="sleep_quality_number">%1$d</string>
+    <string name="time_spent">You spent %1$d hours asleep</string>
+    <string name="sleep_noise_db">%1$d</string>
+    <string name="personal_insight">lorem ipsum</string>
+    <string name="back_to_home">Tap to back home</string>
+    <string name="day">Day</string>
+    <string name="date">%1$d</string>
 </resources>
