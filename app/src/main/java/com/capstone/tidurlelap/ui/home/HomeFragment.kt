@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,7 @@ class HomeFragment : Fragment() {
 
         val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvDate.layoutManager = layoutManager
+        (activity as AppCompatActivity).supportActionBar?.hide()
 
         val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 

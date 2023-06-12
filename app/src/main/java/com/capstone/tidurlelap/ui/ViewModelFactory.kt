@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.ui.login.LoginViewModel
 import com.capstone.tidurlelap.ui.main.MainViewModel
+import com.capstone.tidurlelap.ui.profile.ProfileViewModel
 import com.capstone.tidurlelap.ui.signup.SignupViewModel
+import com.capstone.tidurlelap.ui.sleeptrack.SleepTrackViewModel
 
 class ViewModelFactory(private val pref: UserPreference): ViewModelProvider.NewInstanceFactory() {
     companion object {
@@ -34,6 +36,12 @@ class ViewModelFactory(private val pref: UserPreference): ViewModelProvider.NewI
             }
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
                 MainViewModel(pref) as T
+            }
+            modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
+                ProfileViewModel(pref) as T
+            }
+            modelClass.isAssignableFrom(SleepTrackViewModel::class.java) -> {
+                SleepTrackViewModel(pref) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
