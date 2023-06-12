@@ -7,118 +7,289 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.media.AudioFormat
 import android.media.AudioRecord
+import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.util.Log
+import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.capstone.tidurlelap.databinding.ActivityTrackingBinding
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.ByteBuffer
 import java.nio.ShortBuffer
 import java.util.Arrays
+import kotlin.math.log10
+
+private const val LOG_TAG = "AudioRecordTest"
+private const val REQUEST_RECORD_AUDIO_PERMISSION = 200
 
 class TrackingActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityTrackingBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityTrackingBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private var fileName: String = ""
 
-        binding.btnTrack.setOnClickListener {
-            recordAndProcessAudio()
+    private var recorder: MediaRecorder? = null
+    private var player: MediaPlayer? = null
+
+    // Requesting permission to RECORD_AUDIO
+    private var permissionToRecordAccepted = false
+    private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
+
+    private lateinit var recordButton: Button
+    private lateinit var playButton: Button
+
+    private var isRecording = false
+    private var isPlaying = false
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can start recording here.
+                startRecording()
+            } else {
+                // Permission denied, handle the case gracefully.
+                // You can show a dialog or disable the recording functionality.
+            }
         }
     }
 
-    // Method to calculate the mean of the recorded sound
-    companion object {
-        private const val SAMPLE_RATE = 44100 // Sample rate must be the same as used when recording
-        private const val RECORD_AUDIO_PERMISSION_REQUEST = 200
-    }
+    override fun onCreate(icicle: Bundle?) {
+        super.onCreate(icicle)
+        setContentView(R.layout.activity_tracking)
 
-    // Method to calculate the mean of the recorded sound
-    private fun calculateMean(audioData: ShortArray): Double {
-        var sum = 0.0
-        for (data in audioData) {
-            sum += data
+        // Record to the external cache directory for visibility
+        fileName = "${externalCacheDir?.absolutePath}/audiorecordtest.3gp"
+
+        recordButton = findViewById(R.id.btn_track)
+        playButton = findViewById(R.id.btn_play)
+
+        recordButton.setOnClickListener {
+            onRecordButtonClicked()
         }
-        return sum / audioData.size
+
+        playButton.setOnClickListener {
+            onPlayButtonClicked()
+        }
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                permissions,
+                REQUEST_RECORD_AUDIO_PERMISSION
+            )
+        }
     }
 
-    // Method to calculate the median of the recorded sound
-    private fun calculateMedian(audioData: ShortArray): Double {
-        Arrays.sort(audioData)
-        val middleIndex = audioData.size / 2
-        return if (audioData.size % 2 == 0) {
-            (audioData[middleIndex - 1] + audioData[middleIndex]) / 2.0
+    private fun onRecordButtonClicked() {
+        if (isRecording) {
+            stopRecording()
+            recordButton.text = getString(R.string.start_recording)
         } else {
-            audioData[middleIndex].toDouble()
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                startRecording()
+                recordButton.text = getString(R.string.stop_recording)
+            } else {
+                // Handle the case when the permission is not granted
+                // You can show a dialog or request the permission again
+                // explaining why it's needed.
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.RECORD_AUDIO),
+                    REQUEST_RECORD_AUDIO_PERMISSION
+                )
+            }
+        }
+        isRecording = !isRecording
+    }
+
+    private fun onPlayButtonClicked() {
+        if (isPlaying) {
+            stopPlaying()
+            playButton.text = getString(R.string.start_playing)
+        } else {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.RECORD_AUDIO
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                startPlaying()
+                playButton.text = getString(R.string.stop_playing)
+            } else {
+                // Handle the case when the permission is not granted
+                // You can show a dialog or request the permission again
+                // explaining why it's needed.
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.RECORD_AUDIO),
+                    REQUEST_RECORD_AUDIO_PERMISSION
+                )
+            }
+        }
+        isPlaying = !isPlaying
+    }
+
+    private fun startPlaying() {
+        player = MediaPlayer().apply {
+            try {
+                setDataSource(fileName)
+                prepare()
+                start()
+            } catch (e: IOException) {
+                Log.e(LOG_TAG, "prepare() failed")
+            }
         }
     }
 
-    // Method to record sound and calculate mean/median
-    private fun recordAndProcessAudio() {
-        if (isRecordAudioPermissionGranted()) {
-            try {
-                val bufferSize = AudioRecord.getMinBufferSize(
-                    SAMPLE_RATE,
-                    AudioFormat.CHANNEL_IN_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT
-                )
-                val audioData = ShortArray(bufferSize)
+    private fun stopPlaying() {
+        player?.release()
+        player = null
+    }
 
+    private fun startRecording() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            recorder = MediaRecorder().apply {
+                setAudioSource(MediaRecorder.AudioSource.MIC)
+                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                setOutputFile(fileName)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+                try {
+                    prepare()
+                } catch (e: IOException) {
+                    Log.e(LOG_TAG, "prepare() failed")
+                }
+
+                start()
+            }
+        } else {
+            // Handle the case when the permission is not granted
+            // You can show a dialog or request the permission again
+            // explaining why it's needed.
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.RECORD_AUDIO),
+                REQUEST_RECORD_AUDIO_PERMISSION
+            )
+        }
+    }
+
+    private fun stopRecording() {
+        recorder?.apply {
+            stop()
+            release()
+        }
+        recorder = null
+
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            val bufferSize = AudioRecord.getMinBufferSize(
+                44100,
+                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.ENCODING_PCM_16BIT
+            )
+            val audioBuffer = ShortArray(bufferSize)
+
+            try {
                 val audioRecord = AudioRecord(
                     MediaRecorder.AudioSource.MIC,
-                    SAMPLE_RATE,
+                    44100,
                     AudioFormat.CHANNEL_IN_MONO,
                     AudioFormat.ENCODING_PCM_16BIT,
                     bufferSize
                 )
 
                 audioRecord.startRecording()
-                audioRecord.read(audioData, 0, bufferSize)
-                audioRecord.stop()
 
-                val mean = calculateMean(audioData)
-                val median = calculateMedian(audioData)
+                var sumDb = 0.0
+                var samplesCount = 0
 
-                // Use the mean/median value as per your requirements
-                // Cut and send the audio segments that are above the mean/median
-            } catch (e: SecurityException) {
-                // Handle the SecurityException when recording audio is not permitted
-            }
-        } else {
-            requestRecordAudioPermission()
-        }
-    }
+                while (isRecording) {
+                    val samplesRead = audioRecord.read(audioBuffer, 0, bufferSize)
 
-    // Check if the RECORD_AUDIO permission is granted
-    private fun isRecordAudioPermissionGranted(): Boolean {
-        val permission = Manifest.permission.RECORD_AUDIO
-        val result = ContextCompat.checkSelfPermission(this, permission)
-        return result == PackageManager.PERMISSION_GRANTED
-    }
+                    for (i in 0 until samplesRead) {
+                        val amplitude = audioBuffer[i].toDouble() / Short.MAX_VALUE
+                        val db = 20 * Math.log10(amplitude)
 
-    // Request the RECORD_AUDIO permission
-    private fun requestRecordAudioPermission() {
-        val permission = Manifest.permission.RECORD_AUDIO
-        ActivityCompat.requestPermissions(this, arrayOf(permission), RECORD_AUDIO_PERMISSION_REQUEST)
-    }
-
-    // Handle the permission request result
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when (requestCode) {
-            RECORD_AUDIO_PERMISSION_REQUEST -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission granted, start recording
-                    recordAndProcessAudio()
-                } else {
-                    // Permission denied, handle accordingly (e.g., show a message)
+                        sumDb += db
+                        samplesCount++
+                    }
                 }
+
+                audioRecord.stop()
+                audioRecord.release()
+
+                val meanDb = sumDb / samplesCount
+                val medianDb = calculateMedianDb(audioBuffer, samplesCount)
+
+                // Potong audio berdasarkan nilai dB yang diinginkan
+                val audioFile = File(fileName)
+                val outputFile = File("${externalCacheDir?.absolutePath}/trimmed_audio.3gp")
+                val inputStream = FileInputStream(audioFile)
+                val outputStream = FileOutputStream(outputFile)
+
+                val buffer = ByteArray(bufferSize)
+
+                while (inputStream.read(buffer) != -1) {
+                    // Menghitung dB dari buffer
+                    val amplitude = ByteBuffer.wrap(buffer).short.toDouble() / Short.MAX_VALUE
+                    val db = 20 * log10(amplitude)
+
+                    // Potong audio jika nilai dB buffer di atas meanDb/medianDb
+                    if (db > meanDb) {
+                        outputStream.write(buffer)
+                    }
+                }
+
+                inputStream.close()
+                outputStream.flush()
+                outputStream.close()
+            } catch (e: IOException) {
+                Log.e(LOG_TAG, "stopRecording() failed: ${e.message}")
+            } catch (e: SecurityException) {
+                Log.e(LOG_TAG, "stopRecording() failed: ${e.message}")
             }
         }
     }
+
+    private fun calculateMedianDb(audioBuffer: ShortArray, samplesCount: Int): Double {
+        val sortedBuffer = audioBuffer.copyOf(samplesCount)
+        Arrays.sort(sortedBuffer)
+
+        val medianIndex = samplesCount / 2
+        val medianValue = sortedBuffer[medianIndex].toDouble() / Short.MAX_VALUE
+
+        return 20 * Math.log10(medianValue)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        recorder?.release()
+        recorder = null
+        player?.release()
+        player = null
+        }
+
+
 }
