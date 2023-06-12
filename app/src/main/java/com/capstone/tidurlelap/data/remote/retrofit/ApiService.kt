@@ -2,9 +2,11 @@ package com.capstone.tidurlelap.data.remote.retrofit
 
 import com.capstone.tidurlelap.data.remote.response.LoginResponse
 import com.capstone.tidurlelap.data.remote.response.RegisterResponse
+import com.capstone.tidurlelap.data.remote.response.UserResponse
 import com.capstone.tidurlelap.data.remote.response.SaveSleepSessionResponse
 import okhttp3.MultipartBody
 import retrofit2.Call
+import retrofit2.http.*
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
@@ -35,4 +37,10 @@ interface ApiService {
         @Header("Authorization") auth: String,
         @Part file: MultipartBody.Part
     ): Call<SaveSleepSessionResponse>
+
+
+    @GET("user/profile")
+    fun getUser(
+        @Header("Authorization") token: String,
+    ): Call<UserResponse>
 }

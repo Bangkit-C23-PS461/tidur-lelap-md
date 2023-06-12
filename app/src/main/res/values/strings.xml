@@ -10,9 +10,6 @@
     <string name="language">Language</string>
     <string name="alarm">Alarm</string>
     <string name="tracking_before">Track your sleep</string>
-    <string name="tracking_after">Stop the track</string>
-    <string name="play">Play</string>
-    <string name="stop">Stop</string>
     <string name="title_home">Home</string>
     <string name="title_sleeptrack">Sleep Track</string>
     <string name="title_profile">Profile</string>
@@ -31,6 +28,14 @@
     <string name="back_to_home">Tap to back home</string>
     <string name="day">Day</string>
     <string name="date">%1$d</string>
+    <string name="start_recording">Start Record</string>
+    <string name="stop_recording">Stop Record</string>
+    <string name="play_audio">Play Audio</string>
+    <string name="start_playing">Start Playing</string>
+    <string name="stop_playing">Stop Playing</string>
+    <string name="tracking_after">Stop Tracking</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
     <string-array name="result">
         <item>Low Stress Level</item>
         <item>Mild Stress Level</item>
