@@ -31,20 +31,32 @@
     <string name="back_to_home">Tap to back home</string>
     <string name="day">Day</string>
     <string name="date">%1$d</string>
-    <string-array name="result">
-        <item>Low Stress Level</item>
-        <item>Mild Stress Level</item>
-        <item>Moderate Stress Level</item>
-        <item>High Stress Level</item>
-        <item>Severe Stress Level</item>
-    </string-array>
-    <string-array name="result_description">
-        <item>Maintaining a balanced routine is key. Prioritize self-care activities such as exercise, meditation, and adequate sleep. Set clear boundaries between work and personal life to prevent stress from seeping into your downtime.</item>
-        <item>Practice effective time management. Break tasks into manageable chunks and prioritize based on urgency and importance. Communicate openly with colleagues and seek support when needed. Remember to take short breaks throughout the day to recharge.</item>
-        <item>Embrace stress-reducing techniques such as deep breathing exercises, journaling, or engaging in hobbies. Delegate tasks or ask for help when overwhelmed. Explore stress management workshops or resources to learn new coping strategies.</item>
-        <item>Focus on self-care and stress reduction. Consider talking to a trusted friend, mentor, or therapist to gain perspective and support. Prioritize and delegate tasks, and communicate openly with your team about your workload. Practice self-compassion and recognize that it\'s okay to ask for help.</item>
-        <item>Seek professional help if stress becomes overwhelming. Consult a healthcare provider or therapist who can guide you through personalized stress management techniques. Prioritize self-care and take time off, if necessary. Reach out to support networks for assistance during this challenging time.</item>
-    </string-array>
+    <string name="one_result">Low Stress Level</string>
+    <string name="two_result">Mild Stress Level</string>
+    <string name="three_result">Moderate Stress Level</string>
+    <string name="four_result">High Stress Level</string>
+    <string name="five_result">Severe Stress Level</string>
+    <string name="one_desc">Maintaining a balanced routine is key. Prioritize self-care activities such as exercise, meditation, and adequate sleep. Set clear boundaries between work and personal life to prevent stress from seeping into your downtime.</string>
+    <string name="two_desc">Practice effective time management. Break tasks into manageable chunks and prioritize based on urgency and importance. Communicate openly with colleagues and seek support when needed. Remember to take short breaks throughout the day to recharge.</string>
+    <string name="three_desc">Embrace stress-reducing techniques such as deep breathing exercises, journaling, or engaging in hobbies. Delegate tasks or ask for help when overwhelmed. Explore stress management workshops or resources to learn new coping strategies.</string>
+    <string name="four_desc">Focus on self-care and stress reduction. Consider talking to a trusted friend, mentor, or therapist to gain perspective and support. Prioritize and delegate tasks, and communicate openly with your team about your workload. Practice self-compassion and recognize that it\'s okay to ask for help.</string>
+    <string name="five_desc">Seek professional help if stress becomes overwhelming. Consult a healthcare provider or therapist who can guide you through personalized stress management techniques. Prioritize self-care and take time off, if necessary. Reach out to support networks for assistance during this challenging time.</string>
+    <string name="failure">Can not detect the result</string>
+    <string name="failure_desc">Oops! Sorry, we are unable to detect the insight from the result. Please try again.</string>
+<!--    <string-array name="result">-->
+<!--        <item>Low Stress Level</item>-->
+<!--        <item>Mild Stress Level</item>-->
+<!--        <item>Moderate Stress Level</item>-->
+<!--        <item>High Stress Level</item>-->
+<!--        <item>Severe Stress Level</item>-->
+<!--    </string-array>-->
+<!--    <string-array name="result_description">-->
+<!--        <item>Maintaining a balanced routine is key. Prioritize self-care activities such as exercise, meditation, and adequate sleep. Set clear boundaries between work and personal life to prevent stress from seeping into your downtime.</item>-->
+<!--        <item>Practice effective time management. Break tasks into manageable chunks and prioritize based on urgency and importance. Communicate openly with colleagues and seek support when needed. Remember to take short breaks throughout the day to recharge.</item>-->
+<!--        <item>Embrace stress-reducing techniques such as deep breathing exercises, journaling, or engaging in hobbies. Delegate tasks or ask for help when overwhelmed. Explore stress management workshops or resources to learn new coping strategies.</item>-->
+<!--        <item>Focus on self-care and stress reduction. Consider talking to a trusted friend, mentor, or therapist to gain perspective and support. Prioritize and delegate tasks, and communicate openly with your team about your workload. Practice self-compassion and recognize that it\'s okay to ask for help.</item>-->
+<!--        <item>Seek professional help if stress becomes overwhelming. Consult a healthcare provider or therapist who can guide you through personalized stress management techniques. Prioritize self-care and take time off, if necessary. Reach out to support networks for assistance during this challenging time.</item>-->
+<!--    </string-array>-->
 
 
 </resources>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/cormorant_medium"
         android:text="@string/sleep_quality"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="45dp"
         android:textColor="@color/black"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/cormorant_medium"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:textColor="@color/black"
         android:text="@string/sleep_quality_number"
         android:textSize="50sp"
@@ -34,25 +34,41 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     <TextView
+        android:id="@+id/result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_medium"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        tools:text="@string/one_result"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_score"/>
+
+    <TextView
         android:id="@+id/tv_hours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:text="@string/time_spent"
         android:textColor="@color/black"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_score" />
+        app:layout_constraintTop_toBottomOf="@+id/result" />
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/sleep_time"
-        tools:layout_editor_absoluteX="36dp"
-        tools:layout_editor_absoluteY="236dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="82dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_hours" />
 
     <TextView
         android:id="@+id/sleephours"
@@ -70,9 +86,11 @@
         android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
         android:src="@drawable/sleep_noise"
-        tools:layout_editor_absoluteX="131dp"
-        tools:layout_editor_absoluteY="393dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
     <TextView
         android:id="@+id/sleepnoise"
@@ -90,15 +108,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/bird"
-        tools:layout_editor_absoluteX="267dp"
-        tools:layout_editor_absoluteY="281dp" />
+        android:layout_marginBottom="-55dp"
+        android:layout_marginEnd="29dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView6" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/puppy"
-        tools:layout_editor_absoluteX="36dp"
-        tools:layout_editor_absoluteY="410dp" />
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
 
     <TextView
         android:id="@+id/tv_conclusion"
@@ -126,6 +149,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_conclusion" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

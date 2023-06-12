@@ -70,7 +70,7 @@ class SleepTrackFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        
+
         _binding = FragmentSleepTrackBinding.inflate(inflater, container, false)
         val root: View = binding.root
         (activity as AppCompatActivity).supportActionBar?.hide()
