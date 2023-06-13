@@ -48,6 +48,8 @@
     <string name="five_desc">Seek professional help if stress becomes overwhelming. Consult a healthcare provider or therapist who can guide you through personalized stress management techniques. Prioritize self-care and take time off, if necessary. Reach out to support networks for assistance during this challenging time.</string>
     <string name="failure">Can not detect the result</string>
     <string name="failure_desc">Oops! Sorry, we are unable to detect the insight from the result. Please try again.</string>
+    <string name="sleep_time_hrs">%1$d hrs</string>
+    <string name="snore_count">%1$d</string>
 
 
 </resources>
