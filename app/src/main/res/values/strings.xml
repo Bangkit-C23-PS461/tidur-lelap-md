@@ -6,7 +6,7 @@
     <string name="greeting">Good Evening, %1$s</string>
     <string name="greeting_night">Good Night, %1$s</string>
     <string name="email">name@gmail.com</string>
-    <string name="setting">Setting</string>
+    <string name="setting">Settings</string>
     <string name="language">Language</string>
     <string name="alarm">Alarm</string>
     <string name="tracking_before">Track your sleep</string>
