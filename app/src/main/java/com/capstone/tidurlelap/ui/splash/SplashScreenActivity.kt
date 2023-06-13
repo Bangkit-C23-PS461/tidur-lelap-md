@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.Window
 import android.view.WindowManager
 import com.capstone.tidurlelap.R
 import com.capstone.tidurlelap.databinding.ActivitySplashScreenBinding
