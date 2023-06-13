@@ -53,10 +53,6 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class SleepTrackFragment : Fragment() {
 
 
-    private lateinit var apiService: ApiService
-    private lateinit var token: String
-    private lateinit var userPreference: UserPreference
-
     private var _binding: FragmentSleepTrackBinding? = null
     private var fileName: String = ""
 
@@ -75,35 +71,6 @@ class SleepTrackFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        userPreference = UserPreference.getInstance(context.dataStore)
-
-        apiService = ApiConfig.getApiService()
-
-        // Call the API to get the user's profile and update the greeting text
-        lifecycleScope.launch {
-            userPreference.getUser().collect { userModel ->
-                token = userModel.token
-                apiService.getUser(token).enqueue(object : Callback<UserResponse> {
-                    override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                        if (response.isSuccessful) {
-                            val user = response.body()
-                            val username = user?.username ?: "" // Get the username from the response or use an empty string if null
-                            val greetingText = getString(R.string.greeting, username)
-                            binding.tvGreeting.text = greetingText
-                        } else {
-                            // Handle unsuccessful response
-                        }
-                    }
-
-                    override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                        // Handle API call failure
-                    }
-                })
-            }
-        }
-    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as AppCompatActivity).supportActionBar?.hide()
@@ -119,14 +86,24 @@ class SleepTrackFragment : Fragment() {
         val root: View = binding.root
         (activity as AppCompatActivity).supportActionBar?.hide()
 
-//        val textView: TextView = binding.textDashboard
-//        dashboardViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
+        val dashboardViewModel =
+            ViewModelProvider(
+                this,
+                ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
+            ).get(SleepTrackViewModel::class.java)
+
+        dashboardViewModel.getUser().observe(viewLifecycleOwner) {
+            val token = it.token
+            dashboardViewModel.getUserData(token)
+        }
+
+        dashboardViewModel.username.observe(viewLifecycleOwner){
+            val username = it.username
+            binding.tvGreeting.text = getString(R.string.greeting, username)
+        }
 
         // Record to the external cache directory for visibility
         fileName = "${requireContext().externalCacheDir?.absolutePath}/audiorecordtest.aac"
-
 
         binding.btnTrack.setOnClickListener {
             onRecordButtonClicked()
