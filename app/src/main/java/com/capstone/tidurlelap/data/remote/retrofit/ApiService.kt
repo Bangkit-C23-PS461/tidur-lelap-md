@@ -46,8 +46,15 @@ interface ApiService {
         @Header("Authorization") token: String,
     ): Call<UserResponse>
 
-    @GET("sleep/quality?date=2023-05-22")
+//    @GET("sleep/quality?date=2023-05-22")
+//    fun getResult(
+//        @Header("Authorization") auth: String,
+//    ): Call<ResultResponse>
+
+    @GET("sleep/quality")
     fun getResult(
         @Header("Authorization") auth: String,
+        @Query("date") date: String
     ): Call<ResultResponse>
+
 }

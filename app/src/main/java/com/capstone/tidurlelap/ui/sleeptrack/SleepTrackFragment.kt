@@ -199,6 +199,9 @@ class SleepTrackFragment : Fragment() {
             setOutputFile(fileName)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
 
+            val samplingRate = 44100
+            setAudioSamplingRate(samplingRate)
+
             try {
                 prepare()
             } catch (e: IOException) {

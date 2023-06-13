@@ -14,6 +14,9 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ResultViewModel(private val pref: UserPreference) : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
@@ -27,8 +30,14 @@ class ResultViewModel(private val pref: UserPreference) : ViewModel() {
     }
 
     fun getResult(token: String) {
+        val currentDate = Date() // Replace with your desired date
+        val pattern = "yyyy-MM-dd" // Replace with your desired pattern
+        val locale = Locale.US // Replace with your desired locale
+        val dateFormatter = SimpleDateFormat(pattern, locale)
+        val formattedDate = dateFormatter.format(currentDate)
+
         _isLoading.value = true
-        val client = ApiConfig.getApiService().getResult("Bearer $token")
+        val client = ApiConfig.getApiService().getResult("Bearer $token", formattedDate)
         client.enqueue(object: Callback<ResultResponse> {
             override fun onResponse(
                 call: Call<ResultResponse>,
