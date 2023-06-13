@@ -1,6 +1,7 @@
 package com.capstone.tidurlelap.ui.result
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -12,6 +13,8 @@ import com.capstone.tidurlelap.R
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.databinding.ActivityResultBinding
 import com.capstone.tidurlelap.ui.ViewModelFactory
+import com.capstone.tidurlelap.ui.login.LoginActivity
+import com.capstone.tidurlelap.ui.main.MainActivity
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 class ResultActivity : AppCompatActivity() {
@@ -77,6 +80,12 @@ class ResultActivity : AppCompatActivity() {
                 val token = it.token
                 resultViewModel.getResult(token)
             }
+        }
+
+        binding.tvBackToScreen.setOnClickListener{
+            val intent = Intent(this@ResultActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
