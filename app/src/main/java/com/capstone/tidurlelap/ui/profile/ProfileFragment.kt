@@ -16,8 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.databinding.FragmentProfileBinding
 import com.capstone.tidurlelap.ui.ViewModelFactory
+import com.capstone.tidurlelap.ui.sleeptrack.SleepTrackViewModel
 import com.capstone.tidurlelap.ui.welcome.WelcomeActivity
-
 
 class ProfileFragment : Fragment() {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
@@ -36,19 +36,31 @@ class ProfileFragment : Fragment() {
         val notificationsViewModel =
             ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))).get(ProfileViewModel::class.java)
 
+        val getUserViewModel =
+            ViewModelProvider(
+                this,
+                ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
+            ).get(SleepTrackViewModel::class.java)
+
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
         (activity as AppCompatActivity).supportActionBar?.hide()
+
+        getUserViewModel.getUser().observe(viewLifecycleOwner) {
+            val token = it.token
+            getUserViewModel.getUserData(token)
+        }
+
+        getUserViewModel.username.observe(viewLifecycleOwner) {
+            binding.tvName.text = it.username
+            binding.tvEmail.text = it.email
+        }
 
         binding.btnLogout.setOnClickListener {
             notificationsViewModel.logout()
             startActivity(Intent(activity, WelcomeActivity::class.java))
         }
 
-//        val textView: TextView = binding.textNotifications
-//        notificationsViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
         return root
 
 
