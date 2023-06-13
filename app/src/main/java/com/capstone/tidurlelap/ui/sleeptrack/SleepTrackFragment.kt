@@ -119,6 +119,10 @@ class SleepTrackFragment : Fragment() {
         val root: View = binding.root
         (activity as AppCompatActivity).supportActionBar?.hide()
 
+//        val textView: TextView = binding.textDashboard
+//        dashboardViewModel.text.observe(viewLifecycleOwner) {
+//            textView.text = it
+//        }
 
         // Record to the external cache directory for visibility
         fileName = "${requireContext().externalCacheDir?.absolutePath}/audiorecordtest.aac"
