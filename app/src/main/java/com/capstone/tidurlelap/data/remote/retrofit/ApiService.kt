@@ -20,12 +20,6 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface ApiService {
-//    @Headers("Content-Type: application/json")
-//    @POST("login")
-//    fun login(
-//        @Field("email") email: String,
-//        @Field("password") password: String
-//    ): Call<LoginResponse>
 
     @Headers("Content-Type: application/json")
     @POST("login")
@@ -33,14 +27,6 @@ interface ApiService {
         @Body requestBody: LoginRequest
     ): Call<LoginResponse>
 
-
-//    @FormUrlEncoded
-//    @POST("register")
-//    fun register(
-//        @Field("username") username: String,
-//        @Field("email") email: String,
-//        @Field("password") password: String
-//    ): Call<RegisterResponse>
 
     @Headers("Content-Type: application/json")
     @POST("register")
