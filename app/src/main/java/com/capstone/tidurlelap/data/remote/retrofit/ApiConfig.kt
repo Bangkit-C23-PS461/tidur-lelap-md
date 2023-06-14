@@ -11,6 +11,7 @@ object ApiConfig {
         val authInterceptor = Interceptor { chain ->
             val req = chain.request()
             val requestHeaders = req.newBuilder()
+//                .header("Content-Type", "application/json")
                 .build()
             chain.proceed(requestHeaders)
         }
@@ -21,7 +22,7 @@ object ApiConfig {
             .addInterceptor(loggingInterceptor)
             .build()
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://2ed664d4-ff7f-46b5-b49c-902ae9ec9ad6.mock.pstmn.io")
+            .baseUrl("https://sleep-app-rd4zk42pia-et.a.run.app/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

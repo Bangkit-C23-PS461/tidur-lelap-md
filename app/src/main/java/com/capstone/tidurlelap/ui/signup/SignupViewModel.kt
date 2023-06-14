@@ -6,9 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.UserModel
+import com.capstone.tidurlelap.data.remote.request.RegisterRequest
 import com.capstone.tidurlelap.data.remote.response.RegisterResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -25,8 +27,10 @@ class SignupViewModel(private val pref: UserPreference) : ViewModel() {
     val isRegistrationSuccessful: LiveData<Boolean> = _isRegistrationSuccessful
 
     fun userRegister(name: String, email: String, password: String) {
+        val registerRequest = RegisterRequest(name, email, password)
+
         _isLoading.value = true
-        val client = ApiConfig.getApiService().register(name, email, password)
+        val client = ApiConfig.getApiService().register(registerRequest)
         client.enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(
                 call: Call<RegisterResponse>,
@@ -49,11 +53,17 @@ class SignupViewModel(private val pref: UserPreference) : ViewModel() {
                     }
                 } else {
                     _isLoading.value = false
-                    val responseBody = Gson().fromJson(
-                        response.errorBody()?.charStream(),
-                        RegisterResponse::class.java
-                    )
-                    _message.value = responseBody.message.toString()
+                    val responseBody = try {
+                        Gson().fromJson(
+                            response.errorBody()?.charStream(),
+                            RegisterResponse::class.java
+                        )
+                    } catch (e: JsonSyntaxException) {
+                        // Handle the JSON parsing exception here
+                        // You can log an error, throw a custom exception, or handle it based on your requirements
+                        null // Return null or a default value for the response body if parsing fails
+                    }
+                    _message.value = responseBody?.message.toString()
                     _isRegistrationSuccessful.value = false
                 }
             }

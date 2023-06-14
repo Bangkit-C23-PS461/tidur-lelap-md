@@ -7,6 +7,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.UserModel
+import com.capstone.tidurlelap.data.remote.request.LoginRequest
+import com.capstone.tidurlelap.data.remote.request.RegisterRequest
 import com.capstone.tidurlelap.data.remote.response.LoginResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
 import com.google.gson.Gson
@@ -27,8 +29,10 @@ class LoginViewModel(private val pref: UserPreference): ViewModel() {
     }
 
     fun authenticate(email: String, password: String) {
+        val loginRequest = LoginRequest(email, password)
+
         _isLoading.value = true
-        val client = ApiConfig.getApiService().login(email, password)
+        val client = ApiConfig.getApiService().login(loginRequest)
         client.enqueue(object: Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if(response.isSuccessful) {

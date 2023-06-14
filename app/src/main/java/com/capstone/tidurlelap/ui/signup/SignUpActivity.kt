@@ -77,7 +77,7 @@ class SignUpActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString()
             when {
                 name.isEmpty() -> {
-                    binding.etPassword.error = "Input your username"
+                    binding.etUsername.error = "Input your username"
                 }
                 email.isEmpty() -> {
                     binding.etEmail.error = "Input your email"
@@ -86,7 +86,7 @@ class SignUpActivity : AppCompatActivity() {
                     binding.etPassword.error = "Input your password"
                 }
                 else -> {
-                    signupViewModel.userRegister(email, email, password)
+                    signupViewModel.userRegister(name, email, password)
                     signupViewModel.isRegistrationSuccessful.observe(this) {
                         if (it) {
                             AlertDialog.Builder(this).apply {

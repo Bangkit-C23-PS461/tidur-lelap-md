@@ -44,6 +44,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.Flow
 import androidx.lifecycle.lifecycleScope
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 private const val LOG_TAG = "AudioRecordTest"
@@ -65,6 +69,9 @@ class SleepTrackFragment : Fragment() {
 
     private var isRecording = false
     private var isPlaying = false
+
+    private var startTime: String = ""
+    private var endTime: String = ""
 
 
     // This property is only valid between onCreateView and
@@ -186,6 +193,9 @@ class SleepTrackFragment : Fragment() {
             }
 
             start()
+
+            startTime = getCurrentTimeFormatted()
+            Log.d("Time", "startTime: $startTime")
         }
     }
 
@@ -202,8 +212,11 @@ class SleepTrackFragment : Fragment() {
         }
         recorder = null
 
+        endTime = getCurrentTimeFormatted()
+        Log.d("Time", "endTime: $endTime")
+
         dashboardViewModel.getUser().observe(viewLifecycleOwner) { user ->
-            addAudio(user.token)
+            addAudio(user.token, startTime, endTime)
         }
     }
 
@@ -215,14 +228,21 @@ class SleepTrackFragment : Fragment() {
         player = null
     }
 
-    private fun addAudio(token: String) {
+    private fun addAudio(token: String, startTime: String, endTime: String) {
+
         if (fileName != null) {
             val file = File(fileName)
-            val requestFile = file.asRequestBody("audio/*".toMediaType())
+            val requestFile = file.asRequestBody("audio/aac".toMediaType())
             val audioPart = MultipartBody.Part.createFormData("audio", file.name, requestFile)
+            val startTimeBody = startTime.toRequestBody("text/plain".toMediaType())
+            val endTimeBody = endTime.toRequestBody("text/plain".toMediaType())
 
             val uploadAudioRequest =
-                ApiConfig.getApiService().saveSleepSession("Bearer $token", audioPart)
+                ApiConfig.getApiService().saveSleepSession(
+                    "Bearer $token",
+                    startTimeBody,
+                    endTimeBody,
+                    audioPart)
             uploadAudioRequest.enqueue(object : Callback<SaveSleepSessionResponse> {
                 override fun onResponse(
                     call: Call<SaveSleepSessionResponse>,
@@ -257,5 +277,10 @@ class SleepTrackFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    private fun getCurrentTimeFormatted(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(Date())
     }
 }

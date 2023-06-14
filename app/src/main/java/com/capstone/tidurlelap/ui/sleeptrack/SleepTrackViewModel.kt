@@ -30,7 +30,7 @@ class SleepTrackViewModel(private val pref: UserPreference) : ViewModel() {
     }
 
     fun getUserData(token: String) {
-        val client = ApiConfig.getApiService().getUser(token)
+        val client = ApiConfig.getApiService().getUser("Bearer $token")
         client.enqueue(object: Callback<UserResponse>{
             override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
                 if (response.isSuccessful) {

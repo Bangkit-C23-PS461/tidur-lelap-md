@@ -1,11 +1,14 @@
 package com.capstone.tidurlelap.data.remote.retrofit
 
+import com.capstone.tidurlelap.data.remote.request.LoginRequest
+import com.capstone.tidurlelap.data.remote.request.RegisterRequest
 import com.capstone.tidurlelap.data.remote.response.LoginResponse
 import com.capstone.tidurlelap.data.remote.response.RegisterResponse
 import com.capstone.tidurlelap.data.remote.response.ResultResponse
 import com.capstone.tidurlelap.data.remote.response.UserResponse
 import com.capstone.tidurlelap.data.remote.response.SaveSleepSessionResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.Field
@@ -17,27 +20,41 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface ApiService {
-    @FormUrlEncoded
+//    @Headers("Content-Type: application/json")
+//    @POST("login")
+//    fun login(
+//        @Field("email") email: String,
+//        @Field("password") password: String
+//    ): Call<LoginResponse>
+
+    @Headers("Content-Type: application/json")
     @POST("login")
     fun login(
-        @Field("email") email: String,
-        @Field("password") password: String
+        @Body requestBody: LoginRequest
     ): Call<LoginResponse>
 
 
-    @FormUrlEncoded
+//    @FormUrlEncoded
+//    @POST("register")
+//    fun register(
+//        @Field("username") username: String,
+//        @Field("email") email: String,
+//        @Field("password") password: String
+//    ): Call<RegisterResponse>
+
+    @Headers("Content-Type: application/json")
     @POST("register")
-    fun register(
-        @Field("username") username: String,
-        @Field("email") email: String,
-        @Field("password") password: String
-    ): Call<RegisterResponse>
+    fun register(@Body requestBody: RegisterRequest): Call<RegisterResponse>
+
+
 
     @Multipart
     @POST("sleep/session")
     fun saveSleepSession(
         @Header("Authorization") auth: String,
-        @Part file: MultipartBody.Part
+        @Part("fromTime") fromTime: RequestBody,
+        @Part("toTime") toTime: RequestBody,
+        @Part file: MultipartBody.Part,
     ): Call<SaveSleepSessionResponse>
 
 
@@ -45,11 +62,6 @@ interface ApiService {
     fun getUser(
         @Header("Authorization") token: String,
     ): Call<UserResponse>
-
-//    @GET("sleep/quality?date=2023-05-22")
-//    fun getResult(
-//        @Header("Authorization") auth: String,
-//    ): Call<ResultResponse>
 
     @GET("sleep/quality")
     fun getResult(
