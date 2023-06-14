@@ -3,6 +3,7 @@ package com.capstone.tidurlelap.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.capstone.tidurlelap.data.local.UserPreference
+import com.capstone.tidurlelap.ui.home.HomeViewModel
 import com.capstone.tidurlelap.ui.login.LoginViewModel
 import com.capstone.tidurlelap.ui.main.MainViewModel
 import com.capstone.tidurlelap.ui.profile.ProfileViewModel
@@ -46,6 +47,9 @@ class ViewModelFactory(private val pref: UserPreference): ViewModelProvider.NewI
             }
             modelClass.isAssignableFrom(ResultViewModel::class.java) -> {
                 ResultViewModel(pref) as T
+            }
+            modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
+                HomeViewModel(pref) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

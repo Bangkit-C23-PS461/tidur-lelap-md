@@ -182,7 +182,7 @@ class SleepTrackFragment : Fragment() {
         Log.d("Time", "endTime: $endTime")
 
         dashboardViewModel.getUser().observe(viewLifecycleOwner) { user ->
-            addAudio(startTime, endTime, user.token)
+            addAudio(user.token, startTime, endTime)
         }
     }
 

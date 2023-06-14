@@ -6,4 +6,7 @@ data class CalendarDay(
     val date: Date,
     val dayOfWeek: String,
     // Add any other relevant properties for a day in the calendar
+    var sleepTime: String = "",
+    var sleepNoise: String = "",
+    var snoreCount: String = ""
 )

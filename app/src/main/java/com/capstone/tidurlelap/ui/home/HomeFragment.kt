@@ -1,21 +1,36 @@
 package com.capstone.tidurlelap.ui.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.CalendarDay
+import com.capstone.tidurlelap.data.remote.response.ResultResponse
+import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
+import com.capstone.tidurlelap.data.remote.retrofit.ApiService
 import com.capstone.tidurlelap.databinding.FragmentHomeBinding
+import com.capstone.tidurlelap.ui.ViewModelFactory
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
+
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 class HomeFragment : Fragment() {
 
     private lateinit var calendarAdapter: CalendarAdapter
+    private lateinit var apiService: ApiService
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -38,11 +53,17 @@ class HomeFragment : Fragment() {
 
         binding.rvDate.adapter = calendarAdapter
 
-        fetchApiDataForCalendarDays(calendarDays)
+        val homeViewModel =
+            ViewModelProvider(
+                this,
+                ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
+            ).get(HomeViewModel::class.java)
 
-        val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        homeViewModel.getUser().observe(viewLifecycleOwner) { user ->
+            fetchApiDataForCalendarDays(user.token, calendarDays)
+        }
 
-        // Replace 'YourAdapter' with your own adapter class
+        apiService = ApiConfig.getApiService()
 
         return root
     }
@@ -75,13 +96,39 @@ class HomeFragment : Fragment() {
         return calendarDays
     }
 
-    private fun fetchApiDataForCalendarDays(calendarDays: List<CalendarDay>) {
-        for (day in calendarDays) {
-            // TODO: Fetch data from the API for each day and update the corresponding CalendarDay object
-        }
+    private fun fetchApiDataForCalendarDays(token: String, calendarDays: List<CalendarDay>) {
+        val apiService = ApiConfig.getApiService()
 
-        // Notify the adapter that the data has changed
-        calendarAdapter.notifyDataSetChanged()
+        for (day in calendarDays) {
+            val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(day.date)
+
+            apiService.getResult("Bearer $token", dateString)
+                .enqueue(object : Callback<ResultResponse> {
+                    override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
+                        if (response.isSuccessful) {
+                            val apiResponse = response.body()
+
+                            // Update the corresponding CalendarDay object with the fetched values
+                            apiResponse?.let {
+                                day.sleepTime = it.sleepTime.toString()
+                                day.sleepNoise = it.sleepNoise.toString()
+                                day.snoreCount = it.snoreCount.toString()
+                            }
+
+                            // Notify the adapter that the data has changed
+                            calendarAdapter.notifyDataSetChanged()
+                        } else {
+                            // Handle API error response
+                            // You can show an error message or handle the error in any other way
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
+                        // Handle API call failure
+                        // You can show an error message or handle the failure in any other way
+                    }
+                })
+        }
     }
 
     override fun onDestroyView() {

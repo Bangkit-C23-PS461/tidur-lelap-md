@@ -30,6 +30,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        mainViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(UserPreference.getInstance(dataStore))
+        )[MainViewModel::class.java]
+
         val navView: BottomNavigationView = binding.navView
 
         val navController = findNavController(R.id.nav_host_fragment_activity_main2)
@@ -40,11 +45,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_home, R.id.navigation_sleeptrack, R.id.navigation_profile
             )
         )
-
-        mainViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(UserPreference.getInstance(dataStore))
-        )[MainViewModel::class.java]
 
         mainViewModel.getUser().observe(this) { user ->
             if (user.isLogin) {
