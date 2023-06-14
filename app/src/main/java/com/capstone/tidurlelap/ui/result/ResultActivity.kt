@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -13,6 +14,7 @@ import com.capstone.tidurlelap.R
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.databinding.ActivityResultBinding
 import com.capstone.tidurlelap.ui.ViewModelFactory
+import com.capstone.tidurlelap.ui.home.HomeFragment
 import com.capstone.tidurlelap.ui.login.LoginActivity
 import com.capstone.tidurlelap.ui.main.MainActivity
 
@@ -78,15 +80,19 @@ class ResultActivity : AppCompatActivity() {
         resultViewModel.getUser().observe(this) {
             if (it.token.isNotEmpty()) {
                 val token = it.token
+                Log.d("Token", "Received token: $token")
                 resultViewModel.getResult(token)
             }
         }
 
         binding.tvBackToScreen.setOnClickListener{
-            val intent = Intent(this@ResultActivity, MainActivity::class.java)
-            startActivity(intent)
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.container, HomeFragment())
+            fragmentTransaction.commit()
             finish()
         }
+
     }
 
     private fun showLoading(isLoading: Boolean) {

@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.util.Log
@@ -48,6 +47,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 
 private const val LOG_TAG = "AudioRecordTest"
@@ -61,14 +61,12 @@ class SleepTrackFragment : Fragment() {
     private var fileName: String = ""
 
     private var recorder: MediaRecorder? = null
-    private var player: MediaPlayer? = null
 
     // Requesting permission to RECORD_AUDIO
     private var permissionToRecordAccepted = false
     private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
 
     private var isRecording = false
-    private var isPlaying = false
 
     private var startTime: String = ""
     private var endTime: String = ""
@@ -116,10 +114,6 @@ class SleepTrackFragment : Fragment() {
             onRecordButtonClicked()
         }
 
-        binding.playButton.setOnClickListener {
-            onPlayButtonClicked()
-        }
-
         ActivityCompat.requestPermissions(
             requireActivity(),
             permissions,
@@ -146,34 +140,6 @@ class SleepTrackFragment : Fragment() {
         isRecording = !isRecording
     }
 
-    private fun onPlayButtonClicked() {
-        if (isPlaying) {
-            stopPlaying()
-            binding.playButton.text = getString(R.string.play)
-        } else {
-            startPlaying()
-            binding.playButton.text = getString(R.string.stop)
-        }
-        isPlaying = !isPlaying
-    }
-
-    @SuppressLint("RestrictedApi")
-    private fun startPlaying() {
-        player = MediaPlayer().apply {
-            try {
-                setDataSource(fileName)
-                prepare()
-                start()
-            } catch (e: IOException) {
-                Log.e(LOG_TAG, "prepare() failed")
-            }
-        }
-    }
-
-    private fun stopPlaying() {
-        player?.release()
-        player = null
-    }
 
     @SuppressLint("RestrictedApi")
     private fun startRecording() {
@@ -216,7 +182,7 @@ class SleepTrackFragment : Fragment() {
         Log.d("Time", "endTime: $endTime")
 
         dashboardViewModel.getUser().observe(viewLifecycleOwner) { user ->
-            addAudio(user.token, startTime, endTime)
+            addAudio(startTime, endTime, user.token)
         }
     }
 
@@ -224,8 +190,6 @@ class SleepTrackFragment : Fragment() {
         super.onStop()
         recorder?.release()
         recorder = null
-        player?.release()
-        player = null
     }
 
     private fun addAudio(token: String, startTime: String, endTime: String) {
@@ -233,7 +197,7 @@ class SleepTrackFragment : Fragment() {
         if (fileName != null) {
             val file = File(fileName)
             val requestFile = file.asRequestBody("audio/aac".toMediaType())
-            val audioPart = MultipartBody.Part.createFormData("audio", file.name, requestFile)
+            val audioPart = MultipartBody.Part.createFormData("audioRecording", file.name, requestFile)
             val startTimeBody = startTime.toRequestBody("text/plain".toMediaType())
             val endTimeBody = endTime.toRequestBody("text/plain".toMediaType())
 

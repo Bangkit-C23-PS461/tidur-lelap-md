@@ -54,7 +54,7 @@ interface ApiService {
         @Header("Authorization") auth: String,
         @Part("fromTime") fromTime: RequestBody,
         @Part("toTime") toTime: RequestBody,
-        @Part file: MultipartBody.Part,
+        @Part audioRecording: MultipartBody.Part,
     ): Call<SaveSleepSessionResponse>
 
 
