@@ -75,7 +75,7 @@ class HomeFragment : Fragment() {
                         val result = response.body()
 
                         // Update the UI with the response data
-                        binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
+                        binding.tvSleepTime.text = result?.sleepTime?.toString() ?: "0"
                         binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
                         binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
                         binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
