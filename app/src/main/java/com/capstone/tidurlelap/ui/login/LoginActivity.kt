@@ -87,11 +87,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-//    private navigateToHome() {
-//        val fragmentManager: FragmentManager = supportFragmentManager
-//        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-//        fragmentTransaction.replace(binding.)
-//    }
 
 
     private fun showLoading(isLoading: Boolean) {

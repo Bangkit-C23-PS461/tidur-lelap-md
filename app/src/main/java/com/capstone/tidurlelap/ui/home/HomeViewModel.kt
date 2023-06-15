@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.capstone.tidurlelap.data.local.UserPreference
+import com.capstone.tidurlelap.data.remote.model.UserDetailModel
 import com.capstone.tidurlelap.data.remote.model.UserModel
 
 class HomeViewModel(private val pref: UserPreference) : ViewModel() {
@@ -13,6 +14,10 @@ class HomeViewModel(private val pref: UserPreference) : ViewModel() {
         value = "This is home Fragment"
     }
     val text: LiveData<String> = _text
+
+    fun getDetailUser(): LiveData<UserDetailModel> {
+        return pref.getDetailUser().asLiveData()
+    }
 
     fun getUser(): LiveData<UserModel> {
         return pref.getUser().asLiveData()

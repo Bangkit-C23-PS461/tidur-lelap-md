@@ -33,7 +33,7 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val notificationsViewModel =
+        val profileViewModel =
             ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))).get(ProfileViewModel::class.java)
 
         val getUserViewModel =
@@ -46,24 +46,17 @@ class ProfileFragment : Fragment() {
         val root: View = binding.root
         (activity as AppCompatActivity).supportActionBar?.hide()
 
-        getUserViewModel.getUser().observe(viewLifecycleOwner) {
-            val token = it.token
-            getUserViewModel.getUserData(token)
-        }
-
-        getUserViewModel.username.observe(viewLifecycleOwner) {
+        profileViewModel.getDetailUser().observe(viewLifecycleOwner) {
             binding.tvName.text = it.username
             binding.tvEmail.text = it.email
         }
 
         binding.btnLogout.setOnClickListener {
-            notificationsViewModel.logout()
+            profileViewModel.logout()
             startActivity(Intent(activity, WelcomeActivity::class.java))
         }
 
         return root
-
-
     }
 
     override fun onDestroyView() {

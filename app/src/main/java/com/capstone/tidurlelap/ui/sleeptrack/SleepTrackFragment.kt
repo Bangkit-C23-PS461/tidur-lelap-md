@@ -102,7 +102,7 @@ class SleepTrackFragment : Fragment() {
             dashboardViewModel.getUserData(token)
         }
 
-        dashboardViewModel.username.observe(viewLifecycleOwner){
+        dashboardViewModel.getDetailUser().observe(viewLifecycleOwner){
             val username = it.username
             binding.tvGreeting.text = getString(R.string.greeting, username)
         }
@@ -192,8 +192,7 @@ class SleepTrackFragment : Fragment() {
         recorder = null
     }
 
-    private fun addAudio(token: String, startTime: String, endTime: String) {
-
+    private fun addAudio(token: String, startTime: String, endTime: String, ) {
         if (fileName != null) {
             val file = File(fileName)
             val requestFile = file.asRequestBody("audio/aac".toMediaType())
@@ -245,6 +244,7 @@ class SleepTrackFragment : Fragment() {
 
     private fun getCurrentTimeFormatted(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-        return dateFormat.format(Date())
+        val currentTime = Date()
+        return dateFormat.format(currentTime)
     }
 }

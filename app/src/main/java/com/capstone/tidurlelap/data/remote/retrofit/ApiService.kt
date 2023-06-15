@@ -27,12 +27,9 @@ interface ApiService {
         @Body requestBody: LoginRequest
     ): Call<LoginResponse>
 
-
     @Headers("Content-Type: application/json")
     @POST("register")
     fun register(@Body requestBody: RegisterRequest): Call<RegisterResponse>
-
-
 
     @Multipart
     @POST("sleep/session")
@@ -42,7 +39,6 @@ interface ApiService {
         @Part("toTime") toTime: RequestBody,
         @Part audioRecording: MultipartBody.Part,
     ): Call<SaveSleepSessionResponse>
-
 
     @GET("user/profile")
     fun getUser(

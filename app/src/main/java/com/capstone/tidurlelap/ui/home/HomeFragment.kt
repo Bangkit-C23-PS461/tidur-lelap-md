@@ -12,6 +12,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.tidurlelap.R
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.CalendarDay
 import com.capstone.tidurlelap.data.remote.response.ResultResponse
@@ -58,6 +59,10 @@ class HomeFragment : Fragment() {
                 this,
                 ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
             ).get(HomeViewModel::class.java)
+
+        homeViewModel.getDetailUser().observe(viewLifecycleOwner) { user ->
+            binding.textView.text = getString(R.string.greeting_home, user.username)
+        }
 
         homeViewModel.getUser().observe(viewLifecycleOwner) { user ->
             fetchApiDataForCalendarDays(user.token, calendarDays)

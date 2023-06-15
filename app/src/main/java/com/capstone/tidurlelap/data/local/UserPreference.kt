@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.capstone.tidurlelap.data.remote.model.UserModel
+import com.capstone.tidurlelap.data.remote.model.UserDetailModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -19,6 +20,22 @@ class UserPreference private constructor(
                 preferences[STATE_KEY] ?: false,
                 preferences[TOKEN_KEY] ?:"",
             )
+        }
+    }
+
+    fun getDetailUser(): Flow<UserDetailModel> {
+        return dataStore.data.map { preferences ->
+            UserDetailModel(
+                preferences[EMAIL_KEY] ?: "",
+                preferences[USERNAME_KEY] ?: "",
+            )
+        }
+    }
+
+    suspend fun saveDetailUser(user: UserDetailModel) {
+        dataStore.edit { preferences ->
+            preferences[EMAIL_KEY] = user.email
+            preferences[USERNAME_KEY] = user.username
         }
     }
 
@@ -49,6 +66,9 @@ class UserPreference private constructor(
 
         private val STATE_KEY = booleanPreferencesKey("state")
         private val TOKEN_KEY = stringPreferencesKey("token")
+        private val EMAIL_KEY = stringPreferencesKey("email")
+        private val USERNAME_KEY = stringPreferencesKey("username")
+
 
         fun getInstance(dataStore: DataStore<Preferences>): UserPreference {
             return INSTANCE ?: synchronized(this) {
