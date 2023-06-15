@@ -1,6 +1,10 @@
 package com.capstone.tidurlelap.ui.sleeptrack
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,12 +15,19 @@ import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.UserDetailModel
 import com.capstone.tidurlelap.data.remote.model.UserModel
 import com.capstone.tidurlelap.data.remote.response.ResultResponse
+import com.capstone.tidurlelap.data.remote.response.SaveSleepSessionResponse
 import com.capstone.tidurlelap.data.remote.response.UserResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
+import com.capstone.tidurlelap.ui.result.ResultActivity
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class SleepTrackViewModel(private val pref: UserPreference) : ViewModel() {
 
@@ -25,8 +36,17 @@ class SleepTrackViewModel(private val pref: UserPreference) : ViewModel() {
     }
     val text: LiveData<String> = _text
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     private val _username = MutableLiveData<UserResponse>()
     val username: LiveData<UserResponse> = _username
+
+    private val _responseStatus = MutableLiveData<String>()
+    val responseStatus: LiveData<String> = _responseStatus
+
+    private val _isSuccess = MutableLiveData<Boolean>()
+    val isSuccess: LiveData<Boolean> = _isSuccess
 
     fun getDetailUser(): LiveData<UserDetailModel> {
         return pref.getDetailUser().asLiveData()
@@ -36,29 +56,44 @@ class SleepTrackViewModel(private val pref: UserPreference) : ViewModel() {
         return pref.getUser().asLiveData()
     }
 
-    fun getUserData(token: String) {
-        val client = ApiConfig.getApiService().getUser("Bearer $token")
-        client.enqueue(object: Callback<UserResponse>{
-            override fun onResponse(call: Call<UserResponse>, response: Response<UserResponse>) {
-                if (response.isSuccessful) {
-                    _username.value = response.body()
-                    val responseBody = response.body()
-                    if(responseBody != null) {
-                        viewModelScope.launch {
-                            val email = responseBody.email
-                            val username = responseBody.username
-                            val userDetailModel = UserDetailModel(email, username)
-                            pref.saveDetailUser(userDetailModel)
+    fun addAudio(token: String, startTime: String, endTime: String, fileName: String) {
+            val file = File(fileName)
+            val requestFile = file.asRequestBody("audio/aac".toMediaType())
+            val audioPart = MultipartBody.Part.createFormData("audioRecording", file.name, requestFile)
+            val startTimeBody = startTime.toRequestBody("text/plain".toMediaType())
+            val endTimeBody = endTime.toRequestBody("text/plain".toMediaType())
+
+            _isLoading.value = true
+            val uploadAudioRequest =
+                ApiConfig.getApiService().saveSleepSession(
+                    "Bearer $token",
+                    startTimeBody,
+                    endTimeBody,
+                    audioPart)
+            uploadAudioRequest.enqueue(object : Callback<SaveSleepSessionResponse> {
+                override fun onResponse(
+                    call: Call<SaveSleepSessionResponse>,
+                    response: Response<SaveSleepSessionResponse>
+                ) {
+                    _isLoading.value = false
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+                        if (responseBody != null) {
+                            _responseStatus.value = responseBody.message
+                        } else {
+                            _responseStatus.value = response.message()
                         }
+                        _isSuccess.value = true
+                    } else {
+                        _responseStatus.value = "Recording failed"
+                        _isSuccess.value = false
                     }
                 }
-                else {
-                    Log.e("UsernameViewModel", "onFailure: ${response.message()}")
+                override fun onFailure(call: Call<SaveSleepSessionResponse>, t: Throwable) {
+                    _isLoading.value = false
+                    _responseStatus.value = t.message.toString()
+                    _isSuccess.value = false
                 }
-            }
-            override fun onFailure(call: Call<UserResponse>, t: Throwable) {
-                Log.e("UsernameViewModel", "onFailure: ${t.message.toString()}")
-            }
-        })
+            })
     }
 }

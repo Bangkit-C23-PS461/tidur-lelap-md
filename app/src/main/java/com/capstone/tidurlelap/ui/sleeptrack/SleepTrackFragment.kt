@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PackageManagerCompat.LOG_TAG
@@ -91,20 +92,29 @@ class SleepTrackFragment : Fragment() {
         val root: View = binding.root
         (activity as AppCompatActivity).supportActionBar?.hide()
 
-        val dashboardViewModel =
+        val sleepTrackViewModel =
             ViewModelProvider(
                 this,
                 ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
             ).get(SleepTrackViewModel::class.java)
 
-        dashboardViewModel.getUser().observe(viewLifecycleOwner) {
-            val token = it.token
-            dashboardViewModel.getUserData(token)
+        sleepTrackViewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
         }
 
-        dashboardViewModel.getDetailUser().observe(viewLifecycleOwner){
+        sleepTrackViewModel.getDetailUser().observe(viewLifecycleOwner){
             val username = it.username
             binding.tvGreeting.text = getString(R.string.greeting, username)
+        }
+
+        sleepTrackViewModel.isSuccess.observe(viewLifecycleOwner) {
+            if (it) {
+                val intent = Intent(requireContext(), ResultActivity::class.java)
+                startActivity(intent)
+            }
+            else {
+                showDialog("Error", "Recording failed")
+            }
         }
 
         // Record to the external cache directory for visibility
@@ -166,7 +176,7 @@ class SleepTrackFragment : Fragment() {
     }
 
     private fun stopRecording() {
-        val dashboardViewModel =
+        val sleepTrackViewModel =
             ViewModelProvider(
                 this,
                 ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
@@ -181,8 +191,8 @@ class SleepTrackFragment : Fragment() {
         endTime = getCurrentTimeFormatted()
         Log.d("Time", "endTime: $endTime")
 
-        dashboardViewModel.getUser().observe(viewLifecycleOwner) { user ->
-            addAudio(user.token, startTime, endTime)
+        sleepTrackViewModel.getUser().observe(viewLifecycleOwner) { user ->
+            sleepTrackViewModel.addAudio(user.token, startTime, endTime, fileName)
         }
     }
 
@@ -192,59 +202,22 @@ class SleepTrackFragment : Fragment() {
         recorder = null
     }
 
-    private fun addAudio(token: String, startTime: String, endTime: String, ) {
-        if (fileName != null) {
-            val file = File(fileName)
-            val requestFile = file.asRequestBody("audio/aac".toMediaType())
-            val audioPart = MultipartBody.Part.createFormData("audioRecording", file.name, requestFile)
-            val startTimeBody = startTime.toRequestBody("text/plain".toMediaType())
-            val endTimeBody = endTime.toRequestBody("text/plain".toMediaType())
-
-            val uploadAudioRequest =
-                ApiConfig.getApiService().saveSleepSession(
-                    "Bearer $token",
-                    startTimeBody,
-                    endTimeBody,
-                    audioPart)
-            uploadAudioRequest.enqueue(object : Callback<SaveSleepSessionResponse> {
-                override fun onResponse(
-                    call: Call<SaveSleepSessionResponse>,
-                    response: Response<SaveSleepSessionResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        if (responseBody != null) {
-                            Toast.makeText(
-                                requireContext(),
-                                responseBody.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val intent = Intent(requireContext(), ResultActivity::class.java)
-                            startActivity(intent)
-                            requireActivity().finish()
-                        }
-                    } else {
-                        Toast.makeText(requireContext(), response.message(), Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-
-                override fun onFailure(call: Call<SaveSleepSessionResponse>, t: Throwable) {
-                    Toast.makeText(requireContext(), t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "Have you tried to track your sleep?",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
     private fun getCurrentTimeFormatted(): String {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val currentTime = Date()
         return dateFormat.format(currentTime)
+    }
+
+    private fun showDialog(title: String, message: String) {
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .create()
+        alertDialog.show()
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

@@ -10,6 +10,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.capstone.tidurlelap.R
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.databinding.ActivityResultBinding
@@ -85,11 +86,12 @@ class ResultActivity : AppCompatActivity() {
             }
         }
 
+//        val navController = findNavController(R.id.nav_host_fragment_activity_main2)
+
         binding.tvBackToScreen.setOnClickListener{
-            val fragmentManager = supportFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container, HomeFragment())
-            fragmentTransaction.commit()
+//            navController.navigateUp()
+//            navController.navigate(R.id.navigation_home)
+            startActivity(Intent(this@ResultActivity, MainActivity::class.java))
             finish()
         }
 
