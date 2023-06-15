@@ -125,10 +125,11 @@
 
     <TextView
         android:id="@+id/tv_conclusion"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
         android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="20dp"
         android:text="@string/personal_insight"
         android:gravity="center"
         android:textColor="@color/black"
