@@ -47,8 +47,8 @@ class ProfileFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.hide()
 
         profileViewModel.getDetailUser().observe(viewLifecycleOwner) {
-            binding.tvName.text = it.username
             binding.tvEmail.text = it.email
+            binding.tvName.text = it.username
         }
 
         binding.btnLogout.setOnClickListener {

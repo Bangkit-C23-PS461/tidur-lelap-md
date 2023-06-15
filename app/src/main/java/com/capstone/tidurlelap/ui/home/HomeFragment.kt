@@ -25,6 +25,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import android.os.Handler
+import android.os.Looper
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
@@ -32,9 +36,12 @@ class HomeFragment : Fragment() {
 
     private lateinit var calendarAdapter: CalendarAdapter
     private lateinit var apiService: ApiService
+    private lateinit var userPreference: UserPreference
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val API_DELAY_MS = 3000L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,22 +57,45 @@ class HomeFragment : Fragment() {
 
         val calendarDays = createCalendarDays()
 
+        userPreference = UserPreference.getInstance(requireContext().dataStore)
+
         calendarAdapter = CalendarAdapter(calendarDays.toMutableList()) { calendarDay ->
-            // Implement logic to update sleepTime, sleepNoise, and snoreCount
-            // You can show a dialog or navigate to another screen to capture user input
-            // and then update the corresponding values in calendarDay object
-            val updatedSleepTime = "Updated Sleep Time"
-            val updatedSleepNoise = "Updated Sleep Noise"
-            val updatedSnoreCount = "Updated Snore Count"
+            // Make API call here using the calendarDay object
+            // You can use the same fetchApiDataForCalendarDays method or create a separate method for this
 
-            // Update the values of the calendarDay object
-            calendarDay.sleepTime = updatedSleepTime
-            calendarDay.sleepNoise = updatedSleepNoise
-            calendarDay.snoreCount = updatedSnoreCount
+            val token = runBlocking { userPreference.getUser().firstOrNull()?.token }
 
-            // Notify adapter that the data has changed for the clicked item
-            val clickedItemPosition = calendarDays.indexOf(calendarDay)
-            calendarAdapter.notifyItemChanged(clickedItemPosition)
+            val calendar = Calendar.getInstance()
+            calendar.time = calendarDay.date
+            val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
+
+            apiService.getResult("Bearer $token", dateString).enqueue(object : Callback<ResultResponse> {
+                override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
+                    if (response.isSuccessful) {
+                        val result = response.body()
+
+                        // Update the UI with the response data
+                        binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
+                        binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
+                        binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
+                        binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
+
+                        // Update the CalendarDay object with the fetched data
+                        calendarDay.sleepQuality = result?.sleepScore ?: 0
+                        calendarDay.isDataFetched = true
+
+                        // Notify the adapter that the data has changed for the clicked item
+                        val clickedItemPosition = calendarDays.indexOf(calendarDay)
+                        calendarAdapter.notifyItemChanged(clickedItemPosition)
+                    } else {
+                        // Handle API error
+                    }
+                }
+
+                override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
+                    // Handle network error
+                }
+            })
         }
 
         binding.rvDate.adapter = calendarAdapter
@@ -118,44 +148,44 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchApiDataForCalendarDays(token: String, calendarDays: List<CalendarDay>) {
-        val apiService = ApiConfig.getApiService()
+        val handler = Handler(Looper.getMainLooper())
 
-        for (day in calendarDays) {
-            // Check if data for the day is already fetched
-            if (!day.isDataFetched) {
-                val calendar = Calendar.getInstance() // Create a new instance of Calendar
+        // Iterate through each day with delay
+        calendarDays.forEachIndexed { index, day ->
+            handler.postDelayed({
+                // Check if data for the day is already fetched
+                if (!day.isDataFetched) {
+                    val calendar = Calendar.getInstance()
+                    calendar.time = day.date
 
-                calendar.time = day.date // Set the Calendar's date to the current day
+                    val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
 
-                val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
+                    apiService.getResult("Bearer $token", dateString).enqueue(object : Callback<ResultResponse> {
+                        override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
+                            if (response.isSuccessful) {
+                                val result = response.body()
 
-                apiService.getResult("Bearer $token", dateString).enqueue(object : Callback<ResultResponse> {
-                    override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
-                        if (response.isSuccessful) {
-                            val result = response.body()
-                            // Update the corresponding TextView values
-                            binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
-                            binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
-                            binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
-                            binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
+                                binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
+                                binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
+                                binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
+                                binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
 
-                            // Use the result values as needed
-                            day.sleepQuality = result?.sleepScore ?: 0
-                            day.isDataFetched = true  // Set the flag to indicate data is fetched
-                            calendarAdapter.notifyDataSetChanged()
-                        } else {
-                            // Handle API error
+                                day.sleepQuality = result?.sleepScore ?: 0
+                                day.isDataFetched = true
+                                calendarAdapter.notifyDataSetChanged()
+                            } else {
+                                // Handle API error
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
-                        // Handle network error
-                    }
-                })
-            }
+                        override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
+                            // Handle network error
+                        }
+                    })
+                }
+            }, index * API_DELAY_MS) // Delay based on the index of the day
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
