@@ -10,8 +10,10 @@ import com.capstone.tidurlelap.data.remote.model.CalendarDay
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CalendarAdapter(private val calendarDays: List<CalendarDay>) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
-
+class CalendarAdapter(
+    private val calendarDays: List<CalendarDay>,
+    private val onItemClick: (CalendarDay) -> Unit
+) : RecyclerView.Adapter<CalendarAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_row_button, parent, false)
         return ViewHolder(view)
@@ -24,6 +26,10 @@ class CalendarAdapter(private val calendarDays: List<CalendarDay>) : RecyclerVie
         holder.dateTextView.text = SimpleDateFormat("dd-MM", Locale.getDefault()).format(calendarDay.date)
         holder.dayOfWeekTextView.text = calendarDay.dayOfWeek
 
+        // Set click listener on itemView
+        holder.itemView.setOnClickListener {
+            onItemClick(calendarDay)
+        }
         // TODO: Display any other relevant information from the CalendarDay object
     }
 
@@ -34,6 +40,7 @@ class CalendarAdapter(private val calendarDays: List<CalendarDay>) : RecyclerVie
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateTextView: TextView = itemView.findViewById(R.id.tvDate)
         val dayOfWeekTextView: TextView = itemView.findViewById(R.id.tvDay)
+
 
         // TODO: Add references to other views in the item layout if needed
     }

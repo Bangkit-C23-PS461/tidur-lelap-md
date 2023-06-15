@@ -50,7 +50,23 @@ class HomeFragment : Fragment() {
 
         val calendarDays = createCalendarDays()
 
-        calendarAdapter = CalendarAdapter(calendarDays)
+        calendarAdapter = CalendarAdapter(calendarDays.toMutableList()) { calendarDay ->
+            // Implement logic to update sleepTime, sleepNoise, and snoreCount
+            // You can show a dialog or navigate to another screen to capture user input
+            // and then update the corresponding values in calendarDay object
+            val updatedSleepTime = "Updated Sleep Time"
+            val updatedSleepNoise = "Updated Sleep Noise"
+            val updatedSnoreCount = "Updated Snore Count"
+
+            // Update the values of the calendarDay object
+            calendarDay.sleepTime = updatedSleepTime
+            calendarDay.sleepNoise = updatedSleepNoise
+            calendarDay.snoreCount = updatedSnoreCount
+
+            // Notify adapter that the data has changed for the clicked item
+            val clickedItemPosition = calendarDays.indexOf(calendarDay)
+            calendarAdapter.notifyItemChanged(clickedItemPosition)
+        }
 
         binding.rvDate.adapter = calendarAdapter
 
@@ -105,36 +121,41 @@ class HomeFragment : Fragment() {
         val apiService = ApiConfig.getApiService()
 
         for (day in calendarDays) {
-            val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(day.date)
+            // Check if data for the day is already fetched
+            if (!day.isDataFetched) {
+                val calendar = Calendar.getInstance() // Create a new instance of Calendar
 
-            apiService.getResult("Bearer $token", dateString)
-                .enqueue(object : Callback<ResultResponse> {
+                calendar.time = day.date // Set the Calendar's date to the current day
+
+                val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
+
+                apiService.getResult("Bearer $token", dateString).enqueue(object : Callback<ResultResponse> {
                     override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
                         if (response.isSuccessful) {
-                            val apiResponse = response.body()
+                            val result = response.body()
+                            // Update the corresponding TextView values
+                            binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
+                            binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
+                            binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
+                            binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
 
-                            // Update the corresponding CalendarDay object with the fetched values
-                            apiResponse?.let {
-                                day.sleepTime = it.sleepTime.toString()
-                                day.sleepNoise = it.sleepNoise.toString()
-                                day.snoreCount = it.snoreCount.toString()
-                            }
-
-                            // Notify the adapter that the data has changed
+                            // Use the result values as needed
+                            day.sleepQuality = result?.sleepScore ?: 0
+                            day.isDataFetched = true  // Set the flag to indicate data is fetched
                             calendarAdapter.notifyDataSetChanged()
                         } else {
-                            // Handle API error response
-                            // You can show an error message or handle the error in any other way
+                            // Handle API error
                         }
                     }
 
                     override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
-                        // Handle API call failure
-                        // You can show an error message or handle the failure in any other way
+                        // Handle network error
                     }
                 })
+            }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
