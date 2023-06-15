@@ -18,7 +18,6 @@ import com.capstone.tidurlelap.data.remote.model.CalendarDay
 import com.capstone.tidurlelap.data.remote.response.ResultResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
 import com.capstone.tidurlelap.data.remote.retrofit.ApiService
-import com.capstone.tidurlelap.databinding.FragmentHomeBinding
 import com.capstone.tidurlelap.ui.ViewModelFactory
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,6 +26,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.os.Handler
 import android.os.Looper
+import com.capstone.tidurlelap.databinding.FragmentHomeBinding
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 
@@ -108,11 +108,21 @@ class HomeFragment : Fragment() {
 
         homeViewModel.getUser().observe(viewLifecycleOwner) { user ->
             homeViewModel.getUserData(user.token)
-            fetchApiDataForCalendarDays(user.token, calendarDays)
+            homeViewModel.fetchApiDataForCalendarDays(user.token, calendarDays)
+//            fetchApiDataForCalendarDays(user.token, calendarDays)
         }
 
         homeViewModel.getDetailUser().observe(viewLifecycleOwner) { user ->
             binding.textView.text = getString(R.string.greeting_home, user.username)
+        }
+
+        homeViewModel.result.observe(viewLifecycleOwner) {
+            binding.tvSleepTime.text = it.sleepTime.toString()
+            binding.tvSleepScore.text = it.sleepScore.toString()
+            binding.tvSnoreCount.text = it.snoreCount.toString()
+            binding.tvSleepNoise.text = it.sleepNoise.toString()
+            calendarAdapter.notifyDataSetChanged()
+
         }
 
         apiService = ApiConfig.getApiService()
@@ -146,46 +156,6 @@ class HomeFragment : Fragment() {
         }
 
         return calendarDays
-    }
-
-    private fun fetchApiDataForCalendarDays(token: String, calendarDays: List<CalendarDay>) {
-        val handler = Handler(Looper.getMainLooper())
-
-        // Iterate through each day with delay
-        calendarDays.forEachIndexed { index, day ->
-            handler.postDelayed({
-                // Check if data for the day is already fetched
-                if (!day.isDataFetched) {
-                    val calendar = Calendar.getInstance()
-                    calendar.time = day.date
-
-                    val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
-
-                    apiService.getResult("Bearer $token", dateString).enqueue(object : Callback<ResultResponse> {
-                        override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
-                            if (response.isSuccessful) {
-                                val result = response.body()
-
-                                binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
-                                binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
-                                binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
-                                binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
-
-                                day.sleepQuality = result?.sleepScore ?: 0
-                                day.isDataFetched = true
-                                calendarAdapter.notifyDataSetChanged()
-                            } else {
-                                // Handle API error
-                            }
-                        }
-
-                        override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
-                            // Handle network error
-                        }
-                    })
-                }
-            }, index * API_DELAY_MS) // Delay based on the index of the day
-        }
     }
 
     override fun onDestroyView() {

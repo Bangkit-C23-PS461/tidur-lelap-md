@@ -1,5 +1,7 @@
 package com.capstone.tidurlelap.ui.home
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,14 +9,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.capstone.tidurlelap.data.local.UserPreference
+import com.capstone.tidurlelap.data.remote.model.CalendarDay
 import com.capstone.tidurlelap.data.remote.model.UserDetailModel
 import com.capstone.tidurlelap.data.remote.model.UserModel
+import com.capstone.tidurlelap.data.remote.response.ResultResponse
 import com.capstone.tidurlelap.data.remote.response.UserResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class HomeViewModel(private val pref: UserPreference) : ViewModel() {
 
@@ -25,6 +32,9 @@ class HomeViewModel(private val pref: UserPreference) : ViewModel() {
         value = "This is home Fragment"
     }
     val text: LiveData<String> = _text
+
+    private val _result = MutableLiveData<ResultResponse>()
+    val result: LiveData<ResultResponse> = _result
 
     fun getDetailUser(): LiveData<UserDetailModel> {
         return pref.getDetailUser().asLiveData()
@@ -58,5 +68,46 @@ class HomeViewModel(private val pref: UserPreference) : ViewModel() {
 
     fun getUser(): LiveData<UserModel> {
         return pref.getUser().asLiveData()
+    }
+
+    fun fetchApiDataForCalendarDays(token: String, calendarDays: List<CalendarDay>) {
+        val handler = Handler(Looper.getMainLooper())
+        val API_DELAY_MS = 3000L
+
+        // Iterate through each day with delay
+        calendarDays.forEachIndexed { index, day ->
+            handler.postDelayed({
+                // Check if data for the day is already fetched
+                if (!day.isDataFetched) {
+                    val calendar = Calendar.getInstance()
+                    calendar.time = day.date
+
+                    val dateString = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
+                    val apiService = ApiConfig.getApiService()
+
+                    apiService.getResult("Bearer $token", dateString).enqueue(object : Callback<ResultResponse> {
+                        override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
+                            if (response.isSuccessful) {
+                                _result.value = response.body()
+//                                binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
+//                                binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
+//                                binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
+//                                binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
+//
+//                                day.sleepQuality = result?.sleepScore ?: 0
+                                day.isDataFetched = true
+//                                calendarAdapter.notifyDataSetChanged()
+                            } else {
+                                // Handle API error
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
+                            // Handle network error
+                        }
+                    })
+                }
+            }, index * API_DELAY_MS) // Delay based on the index of the day
+        }
     }
 }
