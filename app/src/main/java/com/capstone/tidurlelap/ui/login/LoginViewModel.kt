@@ -10,8 +10,10 @@ import com.capstone.tidurlelap.data.remote.model.UserModel
 import com.capstone.tidurlelap.data.remote.request.LoginRequest
 import com.capstone.tidurlelap.data.remote.request.RegisterRequest
 import com.capstone.tidurlelap.data.remote.response.LoginResponse
+import com.capstone.tidurlelap.data.remote.response.RegisterResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -54,11 +56,17 @@ class LoginViewModel(private val pref: UserPreference): ViewModel() {
                 }
                 else {
                     _isLoading.value = false
-                    val responseBody = Gson().fromJson(
-                        response.errorBody()?.charStream(),
-                        LoginResponse::class.java
-                    )
-                    _message.value = responseBody.message
+                    val responseBody = try {
+                        Gson().fromJson(
+                            response.errorBody()?.charStream(),
+                            LoginResponse::class.java
+                        )
+                    } catch (e: JsonSyntaxException) {
+                        // Handle the JSON parsing exception here
+                        // You can log an error, throw a custom exception, or handle it based on your requirements
+                        null // Return null or a default value for the response body if parsing fails
+                    }
+                    _message.value = responseBody?.message
                 }
             }
 

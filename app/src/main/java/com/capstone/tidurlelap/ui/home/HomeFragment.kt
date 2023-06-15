@@ -106,12 +106,13 @@ class HomeFragment : Fragment() {
                 ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
             ).get(HomeViewModel::class.java)
 
-        homeViewModel.getDetailUser().observe(viewLifecycleOwner) { user ->
-            binding.textView.text = getString(R.string.greeting_home, user.username)
+        homeViewModel.getUser().observe(viewLifecycleOwner) { user ->
+            homeViewModel.getUserData(user.token)
+            fetchApiDataForCalendarDays(user.token, calendarDays)
         }
 
-        homeViewModel.getUser().observe(viewLifecycleOwner) { user ->
-            fetchApiDataForCalendarDays(user.token, calendarDays)
+        homeViewModel.getDetailUser().observe(viewLifecycleOwner) { user ->
+            binding.textView.text = getString(R.string.greeting_home, user.username)
         }
 
         apiService = ApiConfig.getApiService()
