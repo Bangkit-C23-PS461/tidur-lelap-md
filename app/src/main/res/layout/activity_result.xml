@@ -68,7 +68,8 @@
         android:layout_marginEnd="82dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_hours" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_hours"
+        android:contentDescription="@string/sleep_time_box"/>
 
     <TextView
         android:id="@+id/sleephours"
@@ -90,7 +91,8 @@
         android:layout_marginEnd="20dp"
         android:src="@drawable/sleep_noise"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        android:contentDescription="@string/sleep_noise_box"/>
 
     <TextView
         android:id="@+id/sleepnoise"
@@ -112,7 +114,8 @@
         android:layout_marginEnd="29dp"
         app:layout_constraintBottom_toTopOf="@+id/imageView5"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView6" />
+        app:layout_constraintStart_toEndOf="@+id/imageView6"
+        android:contentDescription="@string/bird_chirping"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -121,7 +124,8 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toStartOf="@+id/imageView5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView6" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        android:contentDescription="@string/puppy_image"/>
 
     <TextView
         android:id="@+id/tv_conclusion"
@@ -162,6 +166,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

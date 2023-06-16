@@ -17,13 +17,13 @@
     <string name="create_now">Create Now</string>
     <string name="greeting_home">Hi, %1$s</string>
     <string name="have_a_nice_day">Have a nice day!</string>
-    <string name="sleep_score_number">%1$d</string>
+    <string name="sleep_score_number">0</string>
     <string name="sleep_score">Sleep Score</string>
     <string name="sleep_hours">%1$d</string>
     <string name="sleep_quality">Sleep Quality</string>
     <string name="sleep_quality_number">%1$d</string>
-    <string name="time_spent">You spent %1$d hours asleep</string>
-    <string name="sleep_noise_db">%1$d</string>
+    <string name="time_spent">You spent %2f hours asleep</string>
+    <string name="sleep_noise_db">0</string>
     <string name="personal_insight">lorem ipsum</string>
     <string name="back_to_home">Tap to back home</string>
     <string name="day">Day</string>
@@ -43,8 +43,8 @@
     <string name="five_desc">Seek professional help if stress becomes overwhelming. Consult a healthcare provider or therapist who can guide you through personalized stress management techniques. Prioritize self-care and take time off, if necessary. Reach out to support networks for assistance during this challenging time.</string>
     <string name="failure">Can not detect the result</string>
     <string name="failure_desc">Oops! Sorry, we are unable to detect the insight from the result. Please try again.</string>
-    <string name="sleep_time_hrs">%1$d s</string>
-    <string name="snore_count">%1$d</string>
+    <string name="sleep_time_hrs">0 s</string>
+    <string name="snore_count">0</string>
     <string name="tidur_lelap">Tidur Lelap</string>
     <string name="sign_in">Sign In</string>
     <string name="e_mail">E-mail</string>
@@ -54,6 +54,17 @@
     <string name="username">Username</string>
     <string name="username_text">Please Input your username</string>
     <string name="have_acc">Already have an account?</string>
-
+    <string name="tidur_lelap_logo">Tidur Lelap logo</string>
+    <string name="sign_in_box">Sign in container</string>
+    <string name="sleep_time_box">Sleep time box</string>
+    <string name="sleep_noise_box">Sleep noise box</string>
+    <string name="bird_chirping">Bird chirping image</string>
+    <string name="puppy_image">Puppy image</string>
+    <string name="sign_up_box">Sign up box</string>
+    <string name="koala_image">Koala image</string>
+    <string name="sleep_container">Sleep metric container</string>
+    <string name="horse_image">Horse image</string>
+    <string name="setting_container">Setting container</string>
+    <string name="profile_image">Default profile image</string>
 
 </resources>

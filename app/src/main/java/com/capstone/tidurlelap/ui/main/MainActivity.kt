@@ -2,8 +2,11 @@ package com.capstone.tidurlelap.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -18,6 +21,7 @@ import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.databinding.ActivityMain2Binding
 import com.capstone.tidurlelap.ui.ViewModelFactory
 import com.capstone.tidurlelap.ui.welcome.WelcomeActivity
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 class MainActivity : AppCompatActivity() {
@@ -29,6 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setupView()
 
         mainViewModel = ViewModelProvider(
             this,
@@ -47,16 +53,31 @@ class MainActivity : AppCompatActivity() {
         )
 
         mainViewModel.getUser().observe(this) { user ->
-            if (user.isLogin) {
+            if (user.isLogin && !user.token.isEmpty()) {
                 setupActionBarWithNavController(navController, appBarConfiguration)
                 navView.setupWithNavController(navController)
             } else {
                 startActivity(Intent(this, WelcomeActivity::class.java))
+                finish()
             }
         }
 
     }
 
-
+    private fun setupView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val insetController = window.insetsController
+            insetController?.let {
+                it.hide(WindowInsets.Type.statusBars())
+                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
+        supportActionBar?.hide()
+    }
 
 }

@@ -8,9 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.UserModel
 import com.capstone.tidurlelap.data.remote.request.LoginRequest
-import com.capstone.tidurlelap.data.remote.request.RegisterRequest
 import com.capstone.tidurlelap.data.remote.response.LoginResponse
-import com.capstone.tidurlelap.data.remote.response.RegisterResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
@@ -62,9 +60,7 @@ class LoginViewModel(private val pref: UserPreference): ViewModel() {
                             LoginResponse::class.java
                         )
                     } catch (e: JsonSyntaxException) {
-                        // Handle the JSON parsing exception here
-                        // You can log an error, throw a custom exception, or handle it based on your requirements
-                        null // Return null or a default value for the response body if parsing fails
+                        null
                     }
                     _message.value = responseBody?.message
                 }

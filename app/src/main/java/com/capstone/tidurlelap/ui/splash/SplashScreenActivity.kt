@@ -2,16 +2,13 @@ package com.capstone.tidurlelap.ui.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.Window
 import android.view.WindowManager
-import com.capstone.tidurlelap.R
+import androidx.appcompat.app.AppCompatActivity
 import com.capstone.tidurlelap.databinding.ActivitySplashScreenBinding
 import com.capstone.tidurlelap.ui.main.MainActivity
-import com.capstone.tidurlelap.ui.welcome.WelcomeActivity
 
 @SuppressLint("CustomSplashScreen")
 class SplashScreenActivity : AppCompatActivity() {

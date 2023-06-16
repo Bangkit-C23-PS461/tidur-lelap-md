@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.UserModel
 import com.capstone.tidurlelap.data.remote.response.ResultResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,9 +28,9 @@ class ResultViewModel(private val pref: UserPreference) : ViewModel() {
     }
 
     fun getResult(token: String) {
-        val currentDate = Date() // Replace with your desired date
-        val pattern = "yyyy-MM-dd" // Replace with your desired pattern
-        val locale = Locale.US // Replace with your desired locale
+        val currentDate = Date()
+        val pattern = "yyyy-MM-dd"
+        val locale = Locale.US
         val dateFormatter = SimpleDateFormat(pattern, locale)
         val formattedDate = dateFormatter.format(currentDate)
 

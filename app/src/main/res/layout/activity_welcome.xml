@@ -15,7 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/image_koala" />
+        android:src="@drawable/image_koala"
+        android:contentDescription="@string/koala_image"/>
 
 
     <TextView

@@ -1,25 +1,15 @@
 package com.capstone.tidurlelap.ui.sleeptrack
 
-import android.app.AlertDialog
-import android.content.Intent
-import android.util.Log
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
-import com.capstone.tidurlelap.R
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.UserDetailModel
 import com.capstone.tidurlelap.data.remote.model.UserModel
-import com.capstone.tidurlelap.data.remote.response.ResultResponse
 import com.capstone.tidurlelap.data.remote.response.SaveSleepSessionResponse
 import com.capstone.tidurlelap.data.remote.response.UserResponse
 import com.capstone.tidurlelap.data.remote.retrofit.ApiConfig
-import com.capstone.tidurlelap.ui.result.ResultActivity
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -43,7 +33,6 @@ class SleepTrackViewModel(private val pref: UserPreference) : ViewModel() {
     val username: LiveData<UserResponse> = _username
 
     private val _responseStatus = MutableLiveData<String>()
-    val responseStatus: LiveData<String> = _responseStatus
 
     private val _isSuccess = MutableLiveData<Boolean>()
     val isSuccess: LiveData<Boolean> = _isSuccess
@@ -81,7 +70,7 @@ class SleepTrackViewModel(private val pref: UserPreference) : ViewModel() {
                         if (responseBody != null) {
                             _responseStatus.value = responseBody.message
                         } else {
-                            _responseStatus.value = response.message()
+                            _responseStatus.value = responseBody?.message
                         }
                         _isSuccess.value = true
                     } else {

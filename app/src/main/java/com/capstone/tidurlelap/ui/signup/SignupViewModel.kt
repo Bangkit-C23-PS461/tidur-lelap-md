@@ -21,7 +21,6 @@ class SignupViewModel(private val pref: UserPreference) : ViewModel() {
     val isLoading: LiveData<Boolean> = _isLoading
 
     private val _message = MutableLiveData<String>()
-    val message: LiveData<String> = _message
 
     private val _isRegistrationSuccessful = MutableLiveData<Boolean>()
     val isRegistrationSuccessful: LiveData<Boolean> = _isRegistrationSuccessful
@@ -59,9 +58,7 @@ class SignupViewModel(private val pref: UserPreference) : ViewModel() {
                             RegisterResponse::class.java
                         )
                     } catch (e: JsonSyntaxException) {
-                        // Handle the JSON parsing exception here
-                        // You can log an error, throw a custom exception, or handle it based on your requirements
-                        null // Return null or a default value for the response body if parsing fails
+                        null
                     }
                     _message.value = responseBody?.message.toString()
                     _isRegistrationSuccessful.value = false

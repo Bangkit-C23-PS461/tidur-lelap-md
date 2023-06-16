@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.capstone.tidurlelap.data.remote.model.UserModel
 import com.capstone.tidurlelap.data.remote.model.UserDetailModel
+import com.capstone.tidurlelap.data.remote.model.UserModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

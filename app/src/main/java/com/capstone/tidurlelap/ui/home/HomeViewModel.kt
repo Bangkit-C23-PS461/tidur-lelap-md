@@ -89,21 +89,14 @@ class HomeViewModel(private val pref: UserPreference) : ViewModel() {
                         override fun onResponse(call: Call<ResultResponse>, response: Response<ResultResponse>) {
                             if (response.isSuccessful) {
                                 _result.value = response.body()
-//                                binding.tvSleepTime.text = result?.sleepTime?.toString() ?: ""
-//                                binding.tvSleepScore.text = result?.sleepScore?.toString() ?: ""
-//                                binding.tvSnoreCount.text = result?.snoreCount?.toString() ?: ""
-//                                binding.tvSleepNoise.text = result?.sleepNoise?.toString() ?: ""
-//
-//                                day.sleepQuality = result?.sleepScore ?: 0
                                 day.isDataFetched = true
-//                                calendarAdapter.notifyDataSetChanged()
                             } else {
-                                // Handle API error
+                                Log.e("HomeViewModel", "onFailure: ${response.message()}")
                             }
                         }
 
                         override fun onFailure(call: Call<ResultResponse>, t: Throwable) {
-                            // Handle network error
+                            Log.e("HomeViewModel", "onFailure: ${t.message.toString()}")
                         }
                     })
                 }

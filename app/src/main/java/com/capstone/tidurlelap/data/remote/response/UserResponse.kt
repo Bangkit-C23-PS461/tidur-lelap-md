@@ -8,4 +8,4 @@ data class UserResponse (
 
     @field:SerializedName("username")
     val username : String
-        )
+    )

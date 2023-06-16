@@ -1,6 +1,6 @@
 package com.capstone.tidurlelap.data.remote.model
 
-import java.util.*
+import java.util.Date
 
 data class CalendarDay(
     val date: Date,

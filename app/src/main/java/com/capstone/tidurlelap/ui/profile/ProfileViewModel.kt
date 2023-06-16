@@ -7,7 +7,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.data.remote.model.UserDetailModel
-import com.capstone.tidurlelap.data.remote.model.UserModel
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(private val pref: UserPreference) : ViewModel() {

@@ -44,11 +44,12 @@ class WelcomeActivity : AppCompatActivity() {
             signupButton.setOnClickListener {
                 val intent = Intent(this@WelcomeActivity, SignUpActivity::class.java)
                 startActivity(intent)
+                finish()
             }
             loginButton.setOnClickListener {
                 val intent = Intent(this@WelcomeActivity, LoginActivity::class.java)
                 startActivity(intent)
-
+                finish()
             }
         }
     }

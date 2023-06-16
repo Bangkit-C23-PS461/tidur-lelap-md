@@ -2,22 +2,24 @@ package com.capstone.tidurlelap.ui.result
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.capstone.tidurlelap.R
 import com.capstone.tidurlelap.data.local.UserPreference
 import com.capstone.tidurlelap.databinding.ActivityResultBinding
 import com.capstone.tidurlelap.ui.ViewModelFactory
-import com.capstone.tidurlelap.ui.home.HomeFragment
-import com.capstone.tidurlelap.ui.login.LoginActivity
 import com.capstone.tidurlelap.ui.main.MainActivity
+import kotlin.math.round
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 class ResultActivity : AppCompatActivity() {
@@ -28,7 +30,7 @@ class ResultActivity : AppCompatActivity() {
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.hide()
+        setupView()
         setupViewModel()
         setupAction()
     }
@@ -46,9 +48,11 @@ class ResultActivity : AppCompatActivity() {
         }
 
         resultViewModel.result.observe(this) {
+            val time = convertSecondsToHours(it.sleepTime)
             binding.tvScore.text = it.sleepScore.toString()
             binding.sleephours.text = it.sleepTime.toString()
             binding.sleepnoise.text = it.sleepNoise.toString()
+            binding.tvHours.text = getString(R.string.time_spent, time)
 
             when (it.sleepScore) {
                 1 -> {
@@ -86,15 +90,33 @@ class ResultActivity : AppCompatActivity() {
             }
         }
 
-//        val navController = findNavController(R.id.nav_host_fragment_activity_main2)
 
         binding.tvBackToScreen.setOnClickListener{
-//            navController.navigateUp()
-//            navController.navigate(R.id.navigation_home)
             startActivity(Intent(this@ResultActivity, MainActivity::class.java))
             finish()
         }
 
+    }
+
+    private fun setupView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val insetController = window.insetsController
+            insetController?.let {
+                it.hide(WindowInsets.Type.statusBars())
+                it.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
+        supportActionBar?.hide()
+    }
+
+    fun convertSecondsToHours(seconds: Int): Double {
+        val hours = seconds / 3600.0
+        return hours
     }
 
     private fun showLoading(isLoading: Boolean) {

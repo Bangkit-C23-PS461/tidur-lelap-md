@@ -7,7 +7,6 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -36,12 +35,6 @@ class ProfileFragment : Fragment() {
     ): View {
         val profileViewModel =
             ViewModelProvider(this, ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))).get(ProfileViewModel::class.java)
-
-        val getUserViewModel =
-            ViewModelProvider(
-                this,
-                ViewModelFactory(UserPreference.getInstance(requireContext().dataStore))
-            ).get(SleepTrackViewModel::class.java)
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root

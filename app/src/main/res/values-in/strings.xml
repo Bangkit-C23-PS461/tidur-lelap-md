@@ -18,13 +18,13 @@
     <string name="create_now">Buat sekarang</string>
     <string name="greeting_home">Hai, %1$s</string>
     <string name="have_a_nice_day">Semoga harimu menyenangkan!</string>
-    <string name="sleep_score_number">%1$d</string>
+    <string name="sleep_score_number">0</string>
     <string name="sleep_score">Skor tidur</string>
     <string name="sleep_hours">%1$d</string>
     <string name="sleep_quality">Kualitas tidur</string>
     <string name="sleep_quality_number">%1$d</string>
-    <string name="time_spent">Kamu tidur selama %1$d jam</string>
-    <string name="sleep_noise_db">%1$d</string>
+    <string name="time_spent">Kamu tidur selama %2f jam</string>
+    <string name="sleep_noise_db">0</string>
     <string name="personal_insight">lorem ipsum</string>
     <string name="back_to_home">Tekan untuk kembali</string>
     <string name="day">Hari</string>
@@ -43,9 +43,9 @@
     <string name="four_desc">Fokus pada perawatan diri dan pengurangan stres. Pertimbangkan untuk berbicara dengan teman, mentor, atau terapis tepercaya untuk mendapatkan perspektif dan dukungan. Prioritaskan dan delegasikan tugas, dan komunikasikan secara terbuka dengan tim Anda tentang beban kerja Anda. Latih belas kasih diri dan sadari bahwa meminta bantuan tidak apa-apa.</string>
     <string name="five_desc">Carilah bantuan profesional jika stres menjadi luar biasa. Konsultasikan dengan penyedia layanan kesehatan atau terapis yang dapat memandu Anda melalui teknik manajemen stres yang dipersonalisasi. Prioritaskan perawatan diri dan ambil cuti, jika perlu. Jangkau untuk mendukung jaringan untuk mendapatkan bantuan selama masa sulit ini.</string>
     <string name="failure">Tidak dapat mendeteksi hasil</string>
-    <string name="failure_desc">Oops! Maaf, kami tidak dapat mendeteksi saran dari hasil, Silahkan coba lagi.</string>
-    <string name="sleep_time_hrs">%1$d s</string>
-    <string name="snore_count">%1$d</string>
+    <string name="failure_desc">Oops! Maaf, kami tidak dapat mendeteksi saran dari hasil, silahkan coba lagi.</string>
+    <string name="sleep_time_hrs">0 d</string>
+    <string name="snore_count">0</string>
     <string name="tidur_lelap">Tidur Lelap</string>
     <string name="sign_in">Masuk</string>
     <string name="e_mail">E-mail</string>
@@ -55,4 +55,16 @@
     <string name="username">Username</string>
     <string name="username_text">Silahkan masukkan username anda</string>
     <string name="have_acc">Sudah mempunyai akun?</string>
+    <string name="tidur_lelap_logo">Logo Tidur Lelap</string>
+    <string name="sign_in_box">Kontainer log in</string>
+    <string name="sleep_time_box">Kotak waktu tidur</string>
+    <string name="sleep_noise_box">Kotak suara bising saat tidur</string>
+    <string name="bird_chirping">Gambar burung berkicau</string>
+    <string name="puppy_image">Gambar anak anjing</string>
+    <string name="sign_up_box">Kontainer registrasi</string>
+    <string name="koala_image">Gambar koala</string>
+    <string name="sleep_container">Kontainer metrik terkait tidur</string>
+    <string name="horse_image">Gambar kuda</string>
+    <string name="setting_container">Kontainer pengaturan</string>
+    <string name="profile_image">Gambar profil bawaan</string>
 </resources>

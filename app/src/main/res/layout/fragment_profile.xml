@@ -14,7 +14,8 @@
         android:src="@drawable/image"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/setting_container"/>
 
     <ImageView
         android:id="@+id/iv_avatar"
@@ -24,7 +25,8 @@
         android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="@id/guidelineVertical"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/baseline_person_outline_24" />
+        android:src="@drawable/baseline_person_outline_24"
+        android:contentDescription="@string/profile_image"/>
 
     <TextView
         android:id="@+id/tv_name"

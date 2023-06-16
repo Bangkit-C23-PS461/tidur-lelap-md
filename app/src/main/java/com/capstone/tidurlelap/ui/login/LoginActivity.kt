@@ -10,18 +10,16 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import com.capstone.tidurlelap.ui.main.MainActivity
 import com.capstone.tidurlelap.data.local.UserPreference
-import com.capstone.tidurlelap.data.remote.model.UserModel
 import com.capstone.tidurlelap.databinding.ActivityLoginBinding
 import com.capstone.tidurlelap.ui.ViewModelFactory
+import com.capstone.tidurlelap.ui.main.MainActivity
 import com.capstone.tidurlelap.ui.signup.SignUpActivity
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var user: UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,8 +84,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
-
-
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
